@@ -1,10 +1,12 @@
-import { JWT, VerifyOptions } from "@fastify/jwt";
-import { FastifyRequest, FastifyReply } from "fastify";
-import { PrismaClient } from "@prisma/client";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { VerifyOptions, JWT } from '@fastify/jwt';
+import type { FastifyRequest, FastifyReply } from 'fastify';
+
+import type { PluginOptions } from './plugin-options.js';
 
 type JwtVerifyOptions = Partial<VerifyOptions> & { onlyCookie?: boolean };
 
-declare module "@fastify/jwt" {
+declare module '@fastify/jwt' {
   interface JWT {
     access: JWT;
     refresh: JWT;
@@ -12,16 +14,23 @@ declare module "@fastify/jwt" {
   }
 }
 
-declare module "fastify" {
+declare module 'fastify' {
   interface FastifyInstance {
-    authenticate: (
-      request: FastifyRequest,
-      reply: FastifyReply,
-    ) => Promise<void>;
-    prisma: PrismaClient;
-
-    sendResetEmail: (to: string, reserLink: string) => Promise<void>;
+    // Décorateurs scalaires
     siteUrl: string;
+
+    // Décorateurs authenticate
+    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+
+    // Fonctions injectées via PluginOptions
+    findUser: PluginOptions['findUser'];
+    createUser: PluginOptions['createUser'];
+    revokeToken: PluginOptions['revokeToken'];
+    sendResetEmail: PluginOptions['sendResetEmail'];
+    createRefreshToken: PluginOptions['createRefreshToken'];
+    updateUserPassword: PluginOptions['updateUserPassword'];
+    logoutAllDevices: PluginOptions['logoutAllDevices'];
+    analyseError: PluginOptions['analyseError'];
   }
 
   interface FastifyRequest {

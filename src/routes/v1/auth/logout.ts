@@ -1,23 +1,16 @@
-import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
+import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyRequest } from 'fastify';
 
-export default async (fastify: FastifyInstance) => {
+export const logoutRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
   fastify.patch(
-    "/logout",
+    '/logout',
     { config: { rawBody: false } },
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         await request.refreshJwtVerify({ onlyCookie: true });
-        await fastify.prisma.refreshToken.update({
-          where: {
-            token: request.cookies.refreshToken,
-          },
-          data: {
-            revokedAt: new Date(),
-          },
-        });
+        await fastify.revokeToken(request.cookies.refeshToken);
       } catch (error) {
         reply.code(401).send({ error: error });
       }
-    },
+    }
   );
 };

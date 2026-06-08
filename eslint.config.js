@@ -8,7 +8,16 @@ import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config(
   {
-    ignores: ["dist/", "node_modules/", "coverage/", ".husky/"],
+    ignores: [
+      "dist/",
+      "node_modules/",
+      "coverage/",
+      ".husky/",
+      "eslint.config.js",          // <-- ajout
+      "lint-staged.config.js",     // <-- ajout
+      "vitest.config.ts",          // <-- ajout (si vous l'utilisez un jour)
+      "knip.json",                 // <-- optionnel
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
@@ -47,7 +56,7 @@ export default tseslint.config(
       "unicorn/filename-case": ["error", { case: "kebabCase" }],
       "unicorn/prefer-node-protocol": "error",
       "unicorn/prefer-top-level-await": "error",
-      "unicorn/no-array-reduce": "off", // discutable, adaptez
+      "unicorn/no-array-reduce": "off",
       "unicorn/no-null": "off",
       "unicorn/prevent-abbreviations": "off",
 
@@ -58,7 +67,7 @@ export default tseslint.config(
       "sonarjs/prefer-immediate-return": "error",
 
       // Security
-      "security/detect-object-injection": "off", // trop bavard, mais utile à considérer
+      "security/detect-object-injection": "off",
       "security/detect-non-literal-fs-filename": "error",
       "security/detect-eval-with-expression": "error",
       "security/detect-unsafe-regex": "error",
@@ -75,10 +84,10 @@ export default tseslint.config(
         alphabetize: { order: "asc" },
       }],
       "import/no-duplicates": "error",
-      "import/no-default-export": "error", // préfère les exports nommés pour un plugin
+      "import/no-default-export": "error",
     },
   },
-  // Désactiver certaines règles pour les fichiers de test
+  // Désactiver certaines règles pour les fichiers de test (si vous avez des tests)
   {
     files: ["tests/**/*.ts"],
     rules: {
@@ -88,5 +97,5 @@ export default tseslint.config(
       "import/no-default-export": "off",
     },
   },
-  eslintConfigPrettier
+  eslintConfigPrettier,
 );
