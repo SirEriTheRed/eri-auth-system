@@ -10,6 +10,9 @@
     "vitest.config.ts",
     "eslint.config.js"
   ],
+  "ignoreDependencies": [
+    "@vitest/ui"
+  ],
   "rules": {
     "files": "error",
     "dependencies": "error",

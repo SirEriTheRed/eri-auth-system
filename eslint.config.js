@@ -13,10 +13,11 @@ export default tseslint.config(
       "node_modules/",
       "coverage/",
       ".husky/",
-      "eslint.config.js",          // <-- ajout
-      "lint-staged.config.js",     // <-- ajout
-      "vitest.config.ts",          // <-- ajout (si vous l'utilisez un jour)
-      "knip.json",                 // <-- optionnel
+      "eslint.config.js",
+      "lint-staged.config.js",
+      "vitest.config.ts",
+      "knip.json",
+      "commitlint.config.js"
     ],
   },
   js.configs.recommended,

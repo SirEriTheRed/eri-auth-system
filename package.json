@@ -1,6 +1,6 @@
 {
   "name": "@EriTheRed/eri-auth-system",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "",
   "main": "./dist/index.js",
@@ -10,7 +10,7 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.js"
+      "types": "./dist/index.d.ts"
     }
   },
   "scripts": {
