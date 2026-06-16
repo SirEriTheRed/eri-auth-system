@@ -76,6 +76,16 @@ export interface PluginOptions {
   siteUrl: string;
 
   /**
+   * Minimum age required for user registration.
+   *
+   * @remarks
+   * Users whose calculated age (from their birthday) is below this value are
+   * rejected during signup. An `Error('User is underaged')` is thrown and
+   * forwarded to {@link PluginOptions.analyseError | `analyseError`}.
+   */
+  minimumAge: number;
+
+  /**
    * Callback that delivers a password-reset link to the user's email inbox.
    *
    * @param to - Recipient email address
@@ -168,7 +178,15 @@ export interface PluginOptions {
    * @returns A user-facing message string, or `null` to fall back to the default error
    *
    * @remarks
-   * The signup route catches errors from `createUser` and passes them here.
+   * The signup route catches errors from **`createUser` and age validation**,
+   * then passes them here. Age is calculated as:
+   * ```
+   * age = today.getFullYear() - birthday.getFullYear();
+   * if (today's month/day is before birthday) age--;
+   * ```
+   * When the calculated age is below `minimumAge`, an
+   * `Error('User is underaged')` is thrown — your callback should translate
+   * this into a user-facing message.
    * Return `null` if the error is not recognised — the route will fall back
    * to a generic "Unknown error during signup" message.
    */
