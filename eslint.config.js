@@ -88,12 +88,24 @@ export default tseslint.config(
       "import/no-default-export": "error",
     },
   },
-  // Désactiver certaines règles pour les fichiers de test (si vous avez des tests)
+  // Test files — relax strict type-checked rules for vitest globals
   {
-    files: ["tests/**/*.ts"],
+    files: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: "tsconfig.test.json",
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
     rules: {
       "@typescript-eslint/no-explicit-any": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-return": "off",
+      "@typescript-eslint/restrict-template-expressions": "off",
+      "@typescript-eslint/require-await": "off",
+      "@typescript-eslint/unbound-method": "off",
       "sonarjs/no-duplicate-string": "off",
       "import/no-default-export": "off",
     },

@@ -17,8 +17,7 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run lint
-      - run: npm run format:check   # à ajouter dans package.json
+      - run: npm run format:check
       - run: npm run type-check
       - run: npm run test
-      - run: npm run coverage       # optionnel
       - run: npx knip

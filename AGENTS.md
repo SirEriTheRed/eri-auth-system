@@ -2,17 +2,17 @@
 
 ## Commands
 
-| Command                         | Action                                                                                                               |
-| ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `npm run build`                 | `tsc` — compiles `src/` → `dist/`                                                                                    |
-| `npm run dev`                   | `tsc --watch`                                                                                                        |
-| `npm run type-check`            | `tsc --noEmit`                                                                                                       |
-| `npm run lint`                  | `eslint .` (flat config, strict type-checked)                                                                        |
-| `npm run lint:fix`              | `eslint . --fix`                                                                                                     |
-| `npm run format`                | `prettier --write .`                                                                                                 |
-| `npm run format:check`          | `prettier --check .`                                                                                                 |
-| `npm test` / `npm run coverage` | **not yet in package.json** — CI expects them, need to be added before tests can run. Use `npx vitest run` directly. |
-| `npx knip`                      | dead-code analysis                                                                                                   |
+| Command                | Action                                                                                                                                                            |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run build`        | `tsc` — compiles `src/` → `dist/`                                                                                                                                 |
+| `npm run dev`          | `tsc --watch`                                                                                                                                                     |
+| `npm run type-check`   | `tsc --noEmit`                                                                                                                                                    |
+| `npm run lint`         | `eslint .` (flat config, strict type-checked)                                                                                                                     |
+| `npm run lint:fix`     | `eslint . --fix`                                                                                                                                                  |
+| `npm run format`       | `prettier --write .`                                                                                                                                              |
+| `npm run format:check` | `prettier --check .`                                                                                                                                              |
+| `npm test`             | Runs `vitest run --coverage` — 23 integration tests covering all 6 routes + authenticate decorator. Coverage thresholds: 80% lines/functions/branches/statements. |
+| `npx knip`             | dead-code analysis                                                                                                                                                |
 
 ## Workflow
 
@@ -53,4 +53,5 @@
 
 - **Vitest** with `globals: true` (describe/it/expect available without import).
 - Coverage thresholds: 80% lines/functions/branches/statements.
-- Run: `npx vitest run` or `npx vitest -- src/path/to/file.test.ts`.
+- Single integration test file: `src/auth-plugin.test.ts` — 23 tests covering all 6 routes + authenticate decorator + error branches.
+- Run: `npm test` or `npx vitest run -- src/auth-plugin.test.ts`.
