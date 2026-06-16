@@ -1,6 +1,6 @@
 {
   "name": "@erithered/eri-auth-system",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "description": "Fastify auth plugin with JWT access/refresh/reset tokens, email-based password reset, and logout-all-devices support. Coded by a human, assisted by AI to set up a comprehensive code quality framework and extracted from its original project into a standalone publishable package.",
   "main": "./dist/index.js",
