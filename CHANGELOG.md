@@ -1,3 +1,17 @@
+# [2.0.0](https://github.com/SirEriTheRed/eri-auth-system/compare/v1.0.0...v2.0.0) (2026-06-16)
+
+### Bug Fixes
+
+- **auth:** correct age validation and add test coverage ([d53a047](https://github.com/SirEriTheRed/eri-auth-system/commit/d53a047190e43a7232e133529c860094796375b2))
+
+### Features
+
+- **auth:** add minimumAge option for age validation during signup ([e21ff18](https://github.com/SirEriTheRed/eri-auth-system/commit/e21ff18a4da59aab942d8eb339179d1a2770301e))
+
+### BREAKING CHANGES
+
+- **auth:** `minimumAge` is now a required property in PluginOptions.
+
 # 1.0.0 (2026-06-16)
 
 ### Bug Fixes
