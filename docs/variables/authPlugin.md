@@ -8,7 +8,7 @@
 
 > `const` **authPlugin**: `FastifyPluginCallback`\<[`PluginOptions`](../interfaces/PluginOptions.md)\>
 
-Defined in: [index.ts:204](https://github.com/SirEriTheRed/eri-auth-system/blob/6f579aa4d856a25080f2723208ecd0d36071b19b/src/index.ts#L204)
+Defined in: [index.ts:210](https://github.com/SirEriTheRed/eri-auth-system/blob/d53a047190e43a7232e133529c860094796375b2/src/index.ts#L210)
 
 Ready-to-use Fastify plugin that adds complete JWT authentication.
 
