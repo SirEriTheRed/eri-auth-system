@@ -1,8 +1,8 @@
 # @erithered/eri-auth-system
 
 [![npm version](https://img.shields.io/npm/v/@erithered/eri-auth-system)](https://www.npmjs.com/package/@erithered/eri-auth-system)
-[![build](https://img.shields.io/github/actions/workflow/status/EriTheRed/eri-auth-system/quality.yml?branch=main)](https://github.com/EriTheRed/eri-auth-system/actions)
-[![coverage](https://img.shields.io/badge/coverage-80%25-brightgreen)](https://github.com/EriTheRed/eri-auth-system)
+[![build](https://img.shields.io/github/actions/workflow/status/SirEriTheRed/eri-auth-system/quality.yml?branch=main)](https://github.com/SirEriTheRed/eri-auth-system/actions)
+[![coverage](https://img.shields.io/badge/coverage-80%25-brightgreen)](https://github.com/SirEriTheRed/eri-auth-system)
 [![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
 
 Fastify auth plugin with JWT access/refresh/reset tokens, email-based password reset, and logout-all-devices support.
