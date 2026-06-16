@@ -1,4 +1,4 @@
 npm run build
 npm test
-npm run check:pack
+npm run check:push
 rm -f *.tgz

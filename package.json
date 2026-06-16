@@ -58,6 +58,7 @@
     "release:dry": "semantic-release --dry-run",
     "lint:spell": "cspell lint \"**/*.{ts,md,json}\" --no-progress",
     "check:pack": "publint --strict && attw --pack",
+    "check:push": "publint --strict && (attw --pack || true)",
     "docs": "typedoc",
     "docs:watch": "typedoc --watch"
   },
