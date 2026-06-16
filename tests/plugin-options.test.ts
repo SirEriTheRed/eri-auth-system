@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import { describe, expect, it, vi } from 'vitest';
 
 import { authPlugin } from '../src/index.js';
 
@@ -17,6 +18,7 @@ describe('PluginOptions validation', () => {
     logoutAllDevices: vi.fn(),
     analyseError: vi.fn().mockResolvedValue(null),
     getTokenRevokedAt: vi.fn().mockResolvedValue(null),
+    minimumAge: 0,
   };
 
   async function expectMissingField(field: string, partialOpts: any) {
@@ -56,5 +58,28 @@ describe('PluginOptions validation', () => {
         await expectMissingField(field, rest);
       });
     }
+  });
+
+  describe('throws when minimumAge is missing or invalid', () => {
+    it('minimumAge is missing', async () => {
+      const { minimumAge: _, ...rest } = validOpts;
+      await expectMissingField('minimumAge', rest);
+    });
+
+    it('minimumAge is negative', async () => {
+      const app = Fastify();
+      app.register(authPlugin, { ...validOpts, minimumAge: -1 });
+      await expect(app.ready()).rejects.toThrow(
+        '[eri-auth-system] Missing required option: minimumAge'
+      );
+    });
+
+    it('minimumAge is not a number', async () => {
+      const app = Fastify();
+      app.register(authPlugin, { ...validOpts, minimumAge: 'abc' as unknown as number });
+      await expect(app.ready()).rejects.toThrow(
+        '[eri-auth-system] Missing required option: minimumAge'
+      );
+    });
   });
 });

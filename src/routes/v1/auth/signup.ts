@@ -62,7 +62,7 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
       try {
         const birthday: Date = new Date(body.birthday);
         const age = getAge(birthday);
-        if (age >= fastify.minimumAge) throw new Error('User is underaged');
+        if (age < fastify.minimumAge) throw new Error('User is underaged');
         await fastify.createUser(body.id, body.email, body.birthday);
         reply.status(201).send('User created sucessfully');
       } catch (error: unknown) {
