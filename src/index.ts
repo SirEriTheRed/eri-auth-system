@@ -62,7 +62,33 @@ import type { PluginOptions } from './types/plugin-options.js';
  *
  * @internal
  */
-const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
+// eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-misused-promises
+const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
+  // Validation des options obligatoires
+  const requiredStrings = ['accessSecret', 'refreshSecret', 'resetSecret', 'siteUrl'] as const;
+  for (const key of requiredStrings) {
+    if (typeof opts[key] !== 'string' || opts[key] === '') {
+      throw new Error(`[eri-auth-system] Missing required option: ${key}`);
+    }
+  }
+
+  const requiredFunctions = [
+    'findUser',
+    'createUser',
+    'revokeToken',
+    'sendResetEmail',
+    'createRefreshToken',
+    'updateUserPassword',
+    'logoutAllDevices',
+    'analyseError',
+    'getTokenRevokedAt',
+  ] as const;
+  for (const key of requiredFunctions) {
+    if (typeof opts[key] !== 'function') {
+      throw new Error(`[eri-auth-system] Missing required option: ${key}`);
+    }
+  }
+
   // Décorateurs scalaires + fonctions issues des opts
   fastify.decorate('siteUrl', fastify.siteUrl);
   fastify.decorate('findUser', opts.findUser);

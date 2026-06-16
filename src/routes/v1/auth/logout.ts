@@ -30,7 +30,7 @@ export const logoutRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
     async (request: FastifyRequest, reply: FastifyReply) => {
       try {
         await request.refreshJwtVerify({ onlyCookie: true });
-        await fastify.revokeToken(request.cookies.refeshToken);
+        await fastify.revokeToken(request.cookies.refreshToken);
       } catch (error) {
         reply.code(401).send({ error: error });
       }

@@ -2,11 +2,34 @@
   "name": "@EriTheRed/eri-auth-system",
   "version": "0.0.1",
   "type": "module",
-  "description": "",
+  "description": "Fastify auth plugin with JWT access/refresh/reset tokens, email-based password reset, and logout-all-devices support. Coded by a human, assisted by AI to set up a comprehensive code quality framework and extracted from its original project into a standalone publishable package.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "author": "EriTheRed",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EriTheRed/eri-auth-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EriTheRed/eri-auth-system/issues"
+  },
+  "homepage": "https://github.com/EriTheRed/eri-auth-system#readme",
+  "keywords": [
+    "fastify",
+    "fastify-plugin",
+    "authentication",
+    "jwt",
+    "refresh-token",
+    "password-reset",
+    "auth-plugin"
+  ],
   "files": [
     "dist"
   ],
