@@ -88,9 +88,9 @@ export default tseslint.config(
       "import/no-default-export": "error",
     },
   },
-  // Test files — relax strict type-checked rules for vitest globals
+  // Test files + test helpers — relax strict type-checked rules for vitest globals
   {
-    files: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+    files: ["**/*.test.ts", "**/*.spec.ts", "tests/helpers.ts"],
     languageOptions: {
       parserOptions: {
         project: "tsconfig.test.json",
@@ -102,11 +102,13 @@ export default tseslint.config(
       "@typescript-eslint/no-unsafe-assignment": "off",
       "@typescript-eslint/no-unsafe-call": "off",
       "@typescript-eslint/no-unsafe-member-access": "off",
+      "@typescript-eslint/no-unsafe-argument": "off",
       "@typescript-eslint/no-unsafe-return": "off",
       "@typescript-eslint/restrict-template-expressions": "off",
       "@typescript-eslint/require-await": "off",
       "@typescript-eslint/unbound-method": "off",
       "sonarjs/no-duplicate-string": "off",
+      "unicorn/filename-case": "off",
       "import/no-default-export": "off",
     },
   },

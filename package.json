@@ -42,6 +42,7 @@
   "scripts": {
     "build": "tsc",
     "type-check": "tsc --noEmit",
+    "type-check:tests": "tsc --noEmit -p tsconfig.test.json",
     "clean": "rm -rf dist",
     "dev": "tsc --watch",
     "test": "vitest run --coverage",
