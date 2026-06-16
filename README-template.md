@@ -41,7 +41,7 @@ _[short description with important keywords in bold]_
 
 <!-- Navigation bar — section anchors; update if you rename any heading below -->
 
-[📦 Install](#-installation) • [📖 Documentation](#-documentation) • [❓ FAQ](#-faq) • [🤝 Contributing](#-contributing) • [💬 Community](#-community) • [💬 Contact](#-contact)
+[Install](#installation) • [Documentation](#documentation) • [FAQ](#faq) • [Contributing](#contributing) • [Community](#community) • [Contact](#contact)
 
 <!--
   Demo media — uncomment this block if you have a demo GIF / screenshot.
@@ -56,28 +56,28 @@ _[legend]_
 
 ---
 
-## 📚 Table of Contents
+## Table of Contents
 
 - [\[Project name\]](#project-name)
-  - [📚 Table of Contents](#-table-of-contents)
-  - [🤔 Why \[Project name\]?](#-why-project-name)
-  - [🧰 Tech Stack](#-tech-stack)
-  - [🗺️ Architecture](#️-architecture)
-  - [✨ Features](#-features)
-  - [🚀 Getting Started](#-getting-started)
-    - [📦 Installation](#-installation)
-    - [⚡ Quickstart](#-quickstart)
-  - [📂 File Structure \& Naming](#-file-structure--naming)
-  - [📖 Documentation](#-documentation)
-  - [❓ FAQ](#-faq)
-  - [🔧 Troubleshooting](#-troubleshooting)
-  - [🔗 Resources](#-resources)
-  - [💬 Community](#-community)
-  - [💬 Contact](#-contact)
-  - [🤝 Contributing](#-contributing)
+  - [Table of Contents](#table-of-contents)
+  - [Why \[Project name\]?](#why-project-name)
+  - [Tech Stack](#tech-stack)
+  - [Architecture](#architecture)
+  - [Features](#features)
+  - [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Quickstart](#quickstart)
+  - [File Structure \& Naming](#file-structure--naming)
+  - [Documentation](#documentation)
+  - [FAQ](#faq)
+  - [Troubleshooting](#troubleshooting)
+  - [Resources](#resources)
+  - [Community](#community)
+  - [Contact](#contact)
+  - [Contributing](#contributing)
     - [Contributors](#contributors)
-  - [🙏 Thanks \& Acknowledgments](#-thanks--acknowledgments)
-  - [📄 License](#-license)
+  - [Thanks \& Acknowledgments](#thanks--acknowledgments)
+  - [License](#license)
 
 ---
 
@@ -89,7 +89,7 @@ _[legend]_
 
 [Optional
 
-## 🤔 Why [Project name]?
+## Why [Project name]?
 
 [Description]
 
@@ -98,11 +98,9 @@ _[legend]_
 [Best features]
 
 [Features comparison table]
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
----
-
-]
+---]
 
 <!--
   Tech Stack — list each technology used. Repeat the table row for each entry.
@@ -111,7 +109,7 @@ _[legend]_
   | Framework   | Fastify     | ^5          |
 -->
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer             | Technology  | Version        |
 | ----------------- | ----------- | -------------- |
@@ -119,7 +117,7 @@ _[legend]_
 
 [... Repeat for each tech]
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -129,13 +127,13 @@ _[legend]_
   If this is a library, explain how it fits into a consumer's project.
 -->
 
-## 🗺️ Architecture
+## Architecture
 
 [graph description]
 
 [a graph of the project's architecture or how it should be integrated into another project]
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -144,18 +142,18 @@ _[legend]_
   (one sentence each). Lead with the most important or differentiating feature.
 -->
 
-## ✨ Features
+## Features
 
 - **[Feature name]** — [Feature description]
 
 [... Repeat for each feature]
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📦 Installation
+### Installation
 
 <!--
   Installation commands — repeat the code block for each supported
@@ -177,7 +175,7 @@ _[legend]_
 [... Repeat for each peer dependency]
 ```
 
-### ⚡ Quickstart
+### Quickstart
 
 <!--
   Step-by-step instructions from zero to a working setup.
@@ -193,7 +191,7 @@ _[legend]_
 
 [... Repeat for each step until usable]
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -204,7 +202,7 @@ _[legend]_
 -->
 <!-- Optional: include if the project has or may have other maintainers
 
-## 📂 File Structure & Naming
+## File Structure & Naming
 
 ```
 [text-based tree graph of the project]
@@ -215,17 +213,17 @@ _[legend]_
 - [Scope]: `[format]`
   [... Repeat for each convention]
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
 -->
 
-## 📖 Documentation
+## Documentation
 
 Full documentation, usage guides, and reference materials are available in the [`docs/`](./docs) directory.
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -234,7 +232,7 @@ Full documentation, usage guides, and reference materials are available in the [
   Keep answers concise. Link to full docs for longer explanations.
 -->
 
-## ❓ FAQ
+## FAQ
 
 <details>
 <summary><strong>[Question]</strong></summary>
@@ -246,7 +244,7 @@ Full documentation, usage guides, and reference materials are available in the [
 
 [![Ask a question](https://img.shields.io/badge/Ask%20a%20question-8A2BE2)](https://github.com/[owner]/[repo]/discussions/new/choose)
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -255,7 +253,7 @@ Full documentation, usage guides, and reference materials are available in the [
   and its workaround or solution. Include error messages if applicable.
 -->
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 <details>
 <summary><strong>[Issue]</strong></summary>
@@ -267,7 +265,7 @@ Full documentation, usage guides, and reference materials are available in the [
 
 [![Report an issue](https://img.shields.io/badge/Report%20an%20issue-A42E2B)](https://github.com/[owner]/[repo]/issues/new/choose)
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -276,13 +274,13 @@ Full documentation, usage guides, and reference materials are available in the [
   related tools, tutorials, blog posts, or videos.
 -->
 
-## 🔗 Resources
+## Resources
 
 - [Link to resource]
 
 [... Repeat for the docs of the used techs and the project's docs]
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -291,12 +289,12 @@ Full documentation, usage guides, and reference materials are available in the [
   Examples: GitHub Discussions, Discord server, Twitter/X, Reddit, etc.
 -->
 
-## 💬 Community
+## Community
 
 - [GitHub Discussions](https://github.com/[owner]/[repo]/discussions)
 - [Twitter / X](https://twitter.com/[handle])
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -305,12 +303,12 @@ Full documentation, usage guides, and reference materials are available in the [
   Fill in your Discord ID, GitHub profile URL, email, etc.
 -->
 
-## 💬 Contact
+## Contact
 
 - Discord: [your-discord-id]
 - [GitHub](https://github.com/[your-username])
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -320,7 +318,7 @@ Full documentation, usage guides, and reference materials are available in the [
 -->
 <!-- Optional: include only if project is open to contributions
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are very welcome! Here's how to get started:
 
@@ -335,7 +333,7 @@ Contributions are very welcome! Here's how to get started:
 
 ![Contributors](https://contrib.rocks/image?repo=[owner]/[repo])
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
@@ -344,20 +342,20 @@ Contributions are very welcome! Here's how to get started:
   inspired or directly helped this project. Be specific when possible.
 -->
 
-## 🙏 Thanks & Acknowledgments
+## Thanks & Acknowledgments
 
 - [Entity and link]
 
 [... Repeat for each technology used, most important docs used during development]
 
-- Everyone who contributed, opened an issue, PR, or star ⭐
+- Everyone who contributed, opened an issue, PR, or star
 
-[↑ Back to top](#-table-of-contents)
+[↑ Back to top](#table-of-contents)
 
 ---
 
 <!-- License — replace with your actual license type and link to the license file -->
 
-## 📄 License
+## License
 
 Distributed under the [License link].
