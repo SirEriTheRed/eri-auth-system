@@ -1,6 +1,6 @@
 /**
  * @packageDocumentation
- * # `@EriTheRed/eri-auth-system`
+ * # `@erithered/eri-auth-system`
  *
  * A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
  * and **password-reset** token namespaces, automatic cookie handling, and seven
@@ -10,7 +10,7 @@
  *
  * ```typescript
  * import fastify from 'fastify';
- * import { authPlugin } from '@EriTheRed/eri-auth-system';
+ * import { authPlugin } from '@erithered/eri-auth-system';
  *
  * const app = fastify();
  *
@@ -175,7 +175,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  * @example
  * ```typescript
  * import fastify from 'fastify';
- * import { authPlugin } from '@EriTheRed/eri-auth-system';
+ * import { authPlugin } from '@erithered/eri-auth-system';
  *
  * const app = fastify();
  *
@@ -202,7 +202,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  * @see {@link PluginOptions} for the complete configuration interface
  */
 export const authPlugin = fp(auth, {
-  name: '@ton-username/fastify-auth',
+  name: '@erithered/eri-auth-system',
   fastify: '>=4.0.0',
 });
 

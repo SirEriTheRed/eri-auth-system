@@ -1,14 +1,14 @@
-[**@EriTheRed/eri-auth-system**](../README.md)
+[**@erithered/eri-auth-system**](../README.md)
 
 ---
 
-[@EriTheRed/eri-auth-system](../README.md) / authPlugin
+[@erithered/eri-auth-system](../globals.md) / authPlugin
 
 # Variable: authPlugin
 
 > `const` **authPlugin**: `FastifyPluginCallback`\<[`PluginOptions`](../interfaces/PluginOptions.md)\>
 
-Defined in: [index.ts:178](https://github.com/SirEriTheRed/eri-auth-system/blob/513a87534eb6497b08fee9b39f6bb53e2e295668/src/index.ts#L178)
+Defined in: [index.ts:204](https://github.com/SirEriTheRed/eri-auth-system/blob/f70127941ad8571da6fc19c3b7bab8a426d56604/src/index.ts#L204)
 
 Ready-to-use Fastify plugin that adds complete JWT authentication.
 
@@ -46,7 +46,7 @@ Registers the following on your Fastify instance:
 
 ```typescript
 import fastify from 'fastify';
-import { authPlugin } from '@EriTheRed/eri-auth-system';
+import { authPlugin } from '@erithered/eri-auth-system';
 
 const app = fastify();
 

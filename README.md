@@ -1,6 +1,6 @@
-# @EriTheRed/eri-auth-system
+# @erithered/eri-auth-system
 
-[![npm version](https://img.shields.io/npm/v/@EriTheRed/eri-auth-system)](https://www.npmjs.com/package/@EriTheRed/eri-auth-system)
+[![npm version](https://img.shields.io/npm/v/@erithered/eri-auth-system)](https://www.npmjs.com/package/@erithered/eri-auth-system)
 [![build](https://img.shields.io/github/actions/workflow/status/EriTheRed/eri-auth-system/quality.yml?branch=main)](https://github.com/EriTheRed/eri-auth-system/actions)
 [![coverage](https://img.shields.io/badge/coverage-80%25-brightgreen)](https://github.com/EriTheRed/eri-auth-system)
 [![node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)](https://nodejs.org)
@@ -12,7 +12,7 @@ Fastify auth plugin with JWT access/refresh/reset tokens, email-based password r
 ## Installation
 
 ```sh
-npm install @EriTheRed/eri-auth-system
+npm install @erithered/eri-auth-system
 ```
 
 **Peer dependencies** — your application must provide these:
@@ -25,7 +25,7 @@ npm install fastify @fastify/jwt @fastify/cookie @sinclair/typebox
 
 ```typescript
 import Fastify from 'fastify';
-import { authPlugin, type PluginOptions } from '@EriTheRed/eri-auth-system';
+import { authPlugin, type PluginOptions } from '@erithered/eri-auth-system';
 
 const app = Fastify();
 
@@ -119,7 +119,7 @@ The refresh namespace includes a `trusted` function that checks revocation statu
 This package is fully typed. Augmentations for `FastifyInstance`, `FastifyRequest`, and `FastifyReply` are provided in `src/types/fastify.d.ts` and are automatically available when you import the plugin.
 
 ```typescript
-import { authPlugin, type PluginOptions } from '@EriTheRed/eri-auth-system';
+import { authPlugin, type PluginOptions } from '@erithered/eri-auth-system';
 ```
 
 ### Type augmentation in your app
@@ -127,7 +127,7 @@ import { authPlugin, type PluginOptions } from '@EriTheRed/eri-auth-system';
 If you need to reference the auth decorators on your Fastify instance, add a `fastify.d.ts` file:
 
 ```typescript
-import '@EriTheRed/eri-auth-system';
+import '@erithered/eri-auth-system';
 ```
 
 ## Development

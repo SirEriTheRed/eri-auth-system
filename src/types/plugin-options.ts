@@ -9,7 +9,7 @@
  * @example
  * ```typescript
  * import fastify from 'fastify';
- * import { authPlugin } from '@EriTheRed/eri-auth-system';
+ * import { authPlugin } from '@erithered/eri-auth-system';
  *
  * const app = fastify();
  * await app.register(authPlugin, {
