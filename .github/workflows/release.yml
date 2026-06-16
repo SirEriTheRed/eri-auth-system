@@ -1,5 +1,8 @@
 name: Release
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   push:
     branches:
@@ -24,7 +27,7 @@ jobs:
         with:
           node-version: 'lts/jod'
           cache: 'npm'
-      - run: npm ci
+      - run: npm install
       - run: npm run build
       - run: npm run release
         env:

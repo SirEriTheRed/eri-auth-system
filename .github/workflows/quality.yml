@@ -1,5 +1,8 @@
 name: Code Quality
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 on:
   workflow_call:
   push:
@@ -16,7 +19,7 @@ jobs:
         with:
           node-version: 'lts/jod'
           cache: 'npm'
-      - run: npm ci
+      - run: npm install
       - run: npm run lint
       - run: npm run format:check
       - run: npm run type-check
