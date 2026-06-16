@@ -16,14 +16,22 @@
   "scripts": {
     "build": "tsc",
     "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
     "dev": "tsc --watch",
+    "test": "vitest run --coverage",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "knip": "knip",
     "analyze": "knip && npx depcheck --ignores=eslint-config-prettier,knip,depcheck",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "release": "semantic-release",
+    "release:dry": "semantic-release --dry-run",
+    "docs": "typedoc",
+    "docs:watch": "typedoc --watch"
   },
   "peerDependencies": {
     "@fastify/cookie": ">=9.0.0",
@@ -37,6 +45,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/npm": "^13.1.5",
     "@types/node": "^20.19.42",
     "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.60.1",
@@ -53,6 +64,9 @@
     "knip": "^6.16.1",
     "lint-staged": "^17.0.7",
     "prettier": "^3.8.3",
+    "semantic-release": "^25.0.5",
+    "typedoc": "^0.28.19",
+    "typedoc-plugin-markdown": "^4.12.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.60.1",
     "vitest": "^4.1.8"

@@ -1,3 +1,33 @@
+/**
+ * @packageDocumentation
+ * # `@EriTheRed/eri-auth-system`
+ *
+ * A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
+ * and **password-reset** token namespaces, automatic cookie handling, and six
+ * pre-built auth routes under the `/v1/auth` prefix.
+ *
+ * ## Quick start
+ *
+ * ```typescript
+ * import fastify from 'fastify';
+ * import { authPlugin } from '@EriTheRed/eri-auth-system';
+ *
+ * const app = fastify();
+ *
+ * await app.register(authPlugin, {
+ *   accessSecret: process.env.JWT_ACCESS_SECRET!,
+ *   refreshSecret: process.env.JWT_REFRESH_SECRET!,
+ *   resetSecret: process.env.JWT_RESET_SECRET!,
+ *   siteUrl: 'https://example.com',
+ *   // ... all PluginOptions callbacks
+ * });
+ *
+ * await app.listen({ port: 3000 });
+ * ```
+ *
+ * @see {@link PluginOptions} for the full configuration reference
+ * @see {@link authPlugin} for the exported plugin
+ */
 import fastifyCookie from '@fastify/cookie';
 import fastifyJwt from '@fastify/jwt';
 import type { FastifyPluginCallback, FastifyRequest } from 'fastify';
@@ -12,6 +42,25 @@ import { refreshRoute } from './routes/v1/auth/refresh.js';
 import { signupRoute } from './routes/v1/auth/signup.js';
 import type { PluginOptions } from './types/plugin-options.js';
 
+/**
+ * Internal plugin callback that wires up all decorators, third-party plugins, and routes.
+ *
+ * @param fastify - The Fastify instance to decorate and register routes on
+ * @param opts - User-provided configuration and callbacks
+ *
+ * @remarks
+ * This is the raw `FastifyPluginCallback` before being wrapped by `fastify-plugin`.
+ * Consumers should use the exported {@link authPlugin} instead of calling this directly.
+ *
+ * Setup performed:
+ * - Injects all {@link PluginOptions} callbacks as Fastify decorators
+ * - Registers `@fastify/cookie` for cookie parsing/setting
+ * - Registers three `@fastify/jwt` namespaces (access, refresh, reset) with their own secrets
+ * - Registers the {@link authenticate} decorator for route protection
+ * - Registers six routes under `/v1/auth`: login, logout, signup, refresh, askPwdReset, pwdReset
+ *
+ * @internal
+ */
 const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
   // Décorateurs scalaires + fonctions issues des opts
   fastify.decorate('siteUrl', fastify.siteUrl);
@@ -69,7 +118,67 @@ const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
   fastify.register(pwdResetRoute, { prefix: '/v1/auth' });
 };
 
+/**
+ * Ready-to-use Fastify plugin that adds complete JWT authentication.
+ *
+ * @typeParam opts - {@link PluginOptions} — all configuration and callbacks are required
+ *
+ * @remarks
+ * Registers the following on your Fastify instance:
+ *
+ * **Decorators:**
+ * - `fastify.authenticate` — preHandler hook that verifies the access JWT
+ * - `fastify.findUser`, `fastify.createUser`, etc. — your callbacks
+ *
+ * **Third-party plugins:**
+ * - `@fastify/cookie` — cookie parsing and setting
+ * - `@fastify/jwt` — three namespaces: `access` (15 min), `refresh` (7 days with revocation check), `reset` (15 min)
+ *
+ * **Routes (all under `/v1/auth`):**
+ * - `POST /login` — authenticate with ID + password
+ * - `PATCH /logout` — revoke the refresh token
+ * - `POST /signup` — create a new user
+ * - `GET /refresh` — rotate the access token using the refresh cookie
+ * - `POST /askPwdReset` — request a password-reset email
+ * - `PATCH /pwdReset` — complete the password reset
+ *
+ * @example
+ * ```typescript
+ * import fastify from 'fastify';
+ * import { authPlugin } from '@EriTheRed/eri-auth-system';
+ *
+ * const app = fastify();
+ *
+ * await app.register(authPlugin, {
+ *   accessSecret: process.env.ACCESS_SECRET!,
+ *   refreshSecret: process.env.REFRESH_SECRET!,
+ *   resetSecret: process.env.RESET_SECRET!,
+ *   siteUrl: 'https://myapp.com',
+ *   findUser: async (id) => db.users.findById(id),
+ *   createUser: async (id, email, birthday) => db.users.create(id, email, birthday),
+ *   revokeToken: async (token) => db.tokens.revoke(token),
+ *   sendResetEmail: async (to, link) => mailer.send(to, link),
+ *   createRefreshToken: async (userId, token, expiresAt) =>
+ *     db.tokens.insert({ userId, token, expiresAt }),
+ *   updateUserPassword: async (userId, hash) => db.users.updatePassword(userId, hash),
+ *   logoutAllDevices: async (userId) => db.tokens.revokeAll(userId),
+ *   analyseError: async (err) => (err.code === 'P2002' ? 'ID already taken' : null),
+ *   getTokenRevokedAt: async (token) => db.tokens.revokedAt(token),
+ * });
+ *
+ * await app.listen({ port: 3000 });
+ * ```
+ *
+ * @see {@link PluginOptions} for the complete configuration interface
+ */
 export const authPlugin = fp(auth, {
   name: '@ton-username/fastify-auth',
   fastify: '>=4.0.0',
 });
+
+/**
+ * Re-exported for convenience.
+ *
+ * @see {@link PluginOptions} for the complete configuration reference
+ */
+export type { PluginOptions } from './types/plugin-options.js';

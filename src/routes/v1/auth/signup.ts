@@ -2,13 +2,50 @@ import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 import type { FastifyReply, FastifyRequest, FastifyInstance, FastifyPluginCallback } from 'fastify';
 
+/**
+ * JSON body schema for the signup request.
+ *
+ * @remarks
+ * Expects a user identifier, a valid email address, and a date-of-birth string.
+ * Server-side validation is minimal — the consumer's `createUser` callback is
+ * expected to enforce any additional constraints (e.g. email uniqueness).
+ */
 const UserSignup = Type.Object({
+  /** The desired user identifier */
   id: Type.String(),
+
+  /** The user's email address (validated against the `email` format) */
   email: Type.String({ format: 'email' }),
+
+  /** The user's date of birth (validated against the `date` format) */
   birthday: Type.String({ format: 'date' }),
 });
 type UserSignupBody = Static<typeof UserSignup>;
 
+/**
+ * Registers the `POST /signup` endpoint that creates a new user account.
+ *
+ * @param fastify - The Fastify instance used to register the route
+ *
+ * @remarks
+ * Delegates user creation to the consumer-provided
+ * {@link PluginOptions.createUser | `createUser`} callback. Error handling is
+ * delegated to the consumer-provided
+ * {@link PluginOptions.analyseError | `analyseError`} callback, which can
+ * translate domain-specific errors (e.g. duplicate ID, invalid email) into
+ * user-facing messages.
+ *
+ * @throws Errors from `createUser` are passed through `analyseError` — if the
+ * callback returns `null` the route falls back to a generic 500 error
+ *
+ * @example
+ * ```typescript
+ * // Request:  POST /v1/auth/signup
+ * // Body:     { "id": "user-1", "email": "user@example.com", "birthday": "1990-01-15" }
+ * // Response: 201
+ * // Body:     "User created sucessfully"
+ * ```
+ */
 export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
   fastify.post(
     '/signup',

@@ -2,11 +2,42 @@ import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 import type { FastifyReply, FastifyRequest, FastifyInstance, FastifyPluginCallback } from 'fastify';
 
+/**
+ * JSON body schema for the password-reset request.
+ *
+ * @remarks
+ * Only requires the user identifier — the actual reset token is generated
+ * server-side and sent via email.
+ */
 const askPwdResetBody = Type.Object({
+  /** The identifier of the user requesting a password reset */
   userId: Type.String(),
 });
 type askPwdResetBody = Static<typeof askPwdResetBody>;
 
+/**
+ * Registers the `POST /askPwdReset` endpoint that initiates a password-reset flow.
+ *
+ * @param fastify - The Fastify instance used to register the route
+ *
+ * @remarks
+ * The route looks up the user by ID, signs a short-lived reset JWT, constructs
+ * a reset link (`{siteUrl}/reset-password?token={resetToken}`), and delivers it
+ * via the consumer-provided
+ * {@link PluginOptions.sendResetEmail | `sendResetEmail`} callback.
+ *
+ * If the user ID does not exist an error is thrown — note that in a production
+ * system you may want to return a generic response to avoid user-enumeration attacks.
+ *
+ * @throws {Error} With message `'User not found'` if no user exists with the given ID
+ *
+ * @example
+ * ```typescript
+ * // Request:  POST /v1/auth/askPwdReset
+ * // Body:     { "userId": "user-1" }
+ * // Response: 200 (no body — email is sent asynchronously)
+ * ```
+ */
 export const askPwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
   fastify.post(
     '/askPwdReset',
