@@ -12,7 +12,10 @@ export async function getPasswordHash(): Promise<string> {
   return cachedPasswordHash;
 }
 
-export async function buildApp(setup?: (app: ReturnType<typeof Fastify>) => void) {
+export async function buildApp(
+  setup?: (app: ReturnType<typeof Fastify>) => void,
+  overrides?: { minimumAge?: number }
+) {
   const findUser = vi.fn();
   const createUser = vi.fn();
   const revokeToken = vi.fn();
@@ -30,6 +33,7 @@ export async function buildApp(setup?: (app: ReturnType<typeof Fastify>) => void
     refreshSecret: 'test-refresh-secret-0123456789012',
     resetSecret: 'test-reset-secret-012345678901234',
     siteUrl: 'http://localhost',
+    minimumAge: overrides?.minimumAge ?? 0,
     findUser,
     createUser,
     revokeToken,

@@ -1,3 +1,5 @@
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+
 import { buildApp, getPasswordHash } from '../../../helpers.js';
 
 let passwordHash: string;

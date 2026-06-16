@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { buildApp } from '../../../helpers.js';
 
 afterEach(() => {
@@ -59,5 +61,93 @@ describe('POST /v1/auth/signup', () => {
 
     expect(response.statusCode).toBe(500);
     expect(response.body).toBe('This user ID is already taken');
+  });
+
+  describe('age validation', () => {
+    it('returns 500 when the user is underaged', async () => {
+      const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
+      mocks.analyseError.mockResolvedValue(null);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: {
+          id: 'underage',
+          email: 'underage@test.com',
+          birthday: new Date(new Date().getFullYear() - 16, 0, 1).toISOString().split('T')[0],
+        },
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(response.body).toBe('Unknown error during signup');
+      expect(mocks.createUser).not.toHaveBeenCalled();
+    });
+
+    it('returns custom analyseError message for underaged user', async () => {
+      const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
+      mocks.analyseError.mockResolvedValue('You must be at least 18 years old');
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: {
+          id: 'underage-2',
+          email: 'underage2@test.com',
+          birthday: new Date(new Date().getFullYear() - 16, 0, 1).toISOString().split('T')[0],
+        },
+      });
+
+      expect(response.statusCode).toBe(500);
+      expect(response.body).toBe('You must be at least 18 years old');
+    });
+
+    it('allows signup when age is at minimumAge threshold', async () => {
+      const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
+      mocks.createUser.mockResolvedValue(undefined);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: {
+          id: 'at-threshold',
+          email: 'threshold@test.com',
+          birthday: new Date(
+            new Date().getFullYear() - 18,
+            new Date().getMonth(),
+            new Date().getDate()
+          )
+            .toISOString()
+            .split('T')[0],
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(mocks.createUser).toHaveBeenCalledWith(
+        'at-threshold',
+        'threshold@test.com',
+        expect.any(String)
+      );
+    });
+
+    it('allows signup when user is well above minimumAge', async () => {
+      const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
+      mocks.createUser.mockResolvedValue(undefined);
+
+      const oldBirthday = new Date();
+      oldBirthday.setFullYear(oldBirthday.getFullYear() - 30);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/v1/auth/signup',
+        payload: {
+          id: 'old-enough',
+          email: 'old@test.com',
+          birthday: oldBirthday.toISOString().split('T')[0],
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(mocks.createUser).toHaveBeenCalled();
+    });
   });
 });

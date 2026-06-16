@@ -2,6 +2,8 @@ import type { Static } from '@sinclair/typebox';
 import { Type } from '@sinclair/typebox';
 import type { FastifyReply, FastifyRequest, FastifyInstance, FastifyPluginCallback } from 'fastify';
 
+import { getAge } from '../../../utils/get-age.js';
+
 /**
  * JSON body schema for the signup request.
  *
@@ -28,15 +30,20 @@ type UserSignupBody = Static<typeof UserSignup>;
  * @param fastify - The Fastify instance used to register the route
  *
  * @remarks
+ * Computes the user's age from `birthday` using {@link getAge} and rejects
+ * the registration if it is below `fastify.minimumAge` with an
+ * `'User is underaged'` error.
+ *
  * Delegates user creation to the consumer-provided
  * {@link PluginOptions.createUser | `createUser`} callback. Error handling is
  * delegated to the consumer-provided
  * {@link PluginOptions.analyseError | `analyseError`} callback, which can
- * translate domain-specific errors (e.g. duplicate ID, invalid email) into
+ * translate domain-specific errors (e.g. underaged, duplicate ID) into
  * user-facing messages.
  *
- * @throws Errors from `createUser` are passed through `analyseError` — if the
- * callback returns `null` the route falls back to a generic 500 error
+ * @throws Errors from age validation and `createUser` are passed through
+ * `analyseError` — if the callback returns `null` the route falls back to a
+ * generic 500 error
  *
  * @example
  * ```typescript
@@ -53,6 +60,9 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
     async (request: FastifyRequest<{ Body: UserSignupBody }>, reply: FastifyReply) => {
       const body: UserSignupBody = request.body;
       try {
+        const birthday: Date = new Date(body.birthday);
+        const age = getAge(birthday);
+        if (age < fastify.minimumAge) throw new Error('User is underaged');
         await fastify.createUser(body.id, body.email, body.birthday);
         reply.status(201).send('User created sucessfully');
       } catch (error: unknown) {

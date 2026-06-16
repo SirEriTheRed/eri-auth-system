@@ -57,6 +57,15 @@ declare module 'fastify' {
     siteUrl: string;
 
     /**
+     * Minimum age required for user registration.
+     *
+     * @remarks
+     * Decorated from {@link PluginOptions.minimumAge | `PluginOptions.minimumAge`}.
+     * Used in the signup route to reject underaged users.
+     */
+    minimumAge: number;
+
+    /**
      * Access-token verification hook.
      *
      * @param request - The incoming Fastify request

@@ -89,8 +89,14 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
     }
   }
 
+  // Validation du minimumAge
+  if (typeof opts.minimumAge !== 'number' || opts.minimumAge < 0) {
+    throw new Error('[eri-auth-system] Missing required option: minimumAge');
+  }
+
   // Décorateurs scalaires + fonctions issues des opts
   fastify.decorate('siteUrl', fastify.siteUrl);
+  fastify.decorate('minimumAge', opts.minimumAge);
   fastify.decorate('findUser', opts.findUser);
   fastify.decorate('createUser', opts.createUser);
   fastify.decorate('revokeToken', opts.revokeToken);

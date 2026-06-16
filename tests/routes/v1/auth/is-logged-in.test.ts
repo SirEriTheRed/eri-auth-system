@@ -1,3 +1,5 @@
+import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { buildApp, signAccessToken } from '../../../helpers.js';
 
 afterEach(() => {
