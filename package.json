@@ -15,12 +15,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EriTheRed/eri-auth-system.git"
+    "url": "git+https://github.com/SirEriTheRed/eri-auth-system.git"
   },
   "bugs": {
-    "url": "https://github.com/EriTheRed/eri-auth-system/issues"
+    "url": "https://github.com/SirEriTheRed/eri-auth-system/issues"
   },
-  "homepage": "https://github.com/EriTheRed/eri-auth-system#readme",
+  "homepage": "https://github.com/SirEriTheRed/eri-auth-system#readme",
   "keywords": [
     "fastify",
     "fastify-plugin",
