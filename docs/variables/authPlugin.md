@@ -8,7 +8,7 @@
 
 > `const` **authPlugin**: `FastifyPluginCallback`\<[`PluginOptions`](../interfaces/PluginOptions.md)\>
 
-Defined in: [index.ts:174](https://github.com/SirEriTheRed/eri-auth-system/blob/7a806e63cc6f2d6bcb7a6cb66906bdd0a5cfc888/src/index.ts#L174)
+Defined in: [index.ts:178](https://github.com/SirEriTheRed/eri-auth-system/blob/513a87534eb6497b08fee9b39f6bb53e2e295668/src/index.ts#L178)
 
 Ready-to-use Fastify plugin that adds complete JWT authentication.
 
@@ -38,6 +38,7 @@ Registers the following on your Fastify instance:
 - `PATCH /logout` — revoke the refresh token
 - `POST /signup` — create a new user
 - `GET /refresh` — rotate the access token using the refresh cookie
+- `GET /is-logged-in` — validate the current access token
 - `POST /askPwdReset` — request a password-reset email
 - `PATCH /pwdReset` — complete the password reset
 

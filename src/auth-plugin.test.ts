@@ -425,6 +425,52 @@ describe('PATCH /v1/auth/pwdReset', () => {
   });
 });
 
+describe('GET /v1/auth/is-logged-in', () => {
+  async function signAccessToken(app: ReturnType<typeof Fastify>) {
+    return app.jwt.access.sign({ userId: 'user-1' });
+  }
+
+  it('returns 200 with the user payload on a valid access token', async () => {
+    const { app } = await buildApp();
+    const token = await signAccessToken(app);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/auth/is-logged-in',
+      headers: { authorization: `Bearer ${token}` },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(JSON.parse(response.body)).toMatchObject({ userId: 'user-1' });
+  });
+
+  it('returns 401 when the access token is invalid', async () => {
+    const { app } = await buildApp();
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/auth/is-logged-in',
+      headers: { authorization: 'Bearer invalid-token' },
+    });
+
+    expect(response.statusCode).toBe(401);
+    expect(JSON.parse(response.body)).toEqual({
+      error: 'Access token invalid, please refresh the token',
+    });
+  });
+
+  it('returns 401 when no authorization header is sent', async () => {
+    const { app } = await buildApp();
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/v1/auth/is-logged-in',
+    });
+
+    expect(response.statusCode).toBe(401);
+  });
+});
+
 describe('authenticate decorator', () => {
   async function signAccessToken(app: ReturnType<typeof Fastify>) {
     return app.jwt.access.sign({ userId: 'user-1' });

@@ -7,7 +7,7 @@
 # `@EriTheRed/eri-auth-system`
 
 A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
-and **password-reset** token namespaces, automatic cookie handling, and six
+and **password-reset** token namespaces, automatic cookie handling, and seven
 pre-built auth routes under the `/v1/auth` prefix.
 
 ## Quick start

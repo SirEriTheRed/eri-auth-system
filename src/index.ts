@@ -3,7 +3,7 @@
  * # `@EriTheRed/eri-auth-system`
  *
  * A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
- * and **password-reset** token namespaces, automatic cookie handling, and six
+ * and **password-reset** token namespaces, automatic cookie handling, and seven
  * pre-built auth routes under the `/v1/auth` prefix.
  *
  * ## Quick start
@@ -35,6 +35,7 @@ import fp from 'fastify-plugin';
 
 import { authenticate } from './plugins/authenticate.js';
 import { askPwdResetRoute } from './routes/v1/auth/ask-pwd-reset.js';
+import { isLoggedInRoute } from './routes/v1/auth/is-logged-in.js';
 import { loginRoute } from './routes/v1/auth/login.js';
 import { logoutRoute } from './routes/v1/auth/logout.js';
 import { pwdResetRoute } from './routes/v1/auth/pwd-reset.js';
@@ -78,6 +79,7 @@ const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
 
   fastify.register(fastifyJwt, {
     namespace: 'access',
+    decoratorName: 'accessUser',
     secret: opts.accessSecret,
     sign: { expiresIn: '15m' },
   });
@@ -116,6 +118,7 @@ const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
   fastify.register(refreshRoute, { prefix: '/v1/auth' });
   fastify.register(askPwdResetRoute, { prefix: '/v1/auth' });
   fastify.register(pwdResetRoute, { prefix: '/v1/auth' });
+  fastify.register(isLoggedInRoute, { prefix: '/v1/auth' });
 };
 
 /**
@@ -139,6 +142,7 @@ const auth: FastifyPluginCallback<PluginOptions> = (fastify, opts) => {
  * - `PATCH /logout` — revoke the refresh token
  * - `POST /signup` — create a new user
  * - `GET /refresh` — rotate the access token using the refresh cookie
+ * - `GET /is-logged-in` — validate the current access token
  * - `POST /askPwdReset` — request a password-reset email
  * - `PATCH /pwdReset` — complete the password reset
  *

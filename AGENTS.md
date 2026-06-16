@@ -11,7 +11,7 @@
 | `npm run lint:fix`     | `eslint . --fix`                                                                                                                                                  |
 | `npm run format`       | `prettier --write .`                                                                                                                                              |
 | `npm run format:check` | `prettier --check .`                                                                                                                                              |
-| `npm test`             | Runs `vitest run --coverage` — 23 integration tests covering all 6 routes + authenticate decorator. Coverage thresholds: 80% lines/functions/branches/statements. |
+| `npm test`             | Runs `vitest run --coverage` — 26 integration tests covering all 7 routes + authenticate decorator. Coverage thresholds: 80% lines/functions/branches/statements. |
 | `npx knip`             | dead-code analysis                                                                                                                                                |
 
 ## Workflow
@@ -23,7 +23,7 @@
 ## Architecture
 
 - **Single-package ESM repo** — publishes a `fastify-plugin` (`authPlugin` from `src/index.ts`).
-- **Entrypoint**: `src/index.ts` — decorates fastify with callbacks from `PluginOptions`, registers `@fastify/cookie`, `@fastify/jwt` (3 namespaces: access/refresh/reset), and 6 routes under `/v1/auth`.
+- **Entrypoint**: `src/index.ts` — decorates fastify with callbacks from `PluginOptions`, registers `@fastify/cookie`, `@fastify/jwt` (3 namespaces: access/refresh/reset), and 7 routes under `/v1/auth`.
 - **Dependency injection**: no ORM/framework — consumer provides callbacks (`findUser`, `createUser`, `revokeToken`, `sendResetEmail`, `createRefreshToken`, `updateUserPassword`, `logoutAllDevices`, `analyseError`, `getTokenRevokedAt`).
 - **Type augmentation**: `src/types/fastify.d.ts` augments `@fastify/jwt` and `fastify` modules.
 
@@ -53,5 +53,5 @@
 
 - **Vitest** with `globals: true` (describe/it/expect available without import).
 - Coverage thresholds: 80% lines/functions/branches/statements.
-- Single integration test file: `src/auth-plugin.test.ts` — 23 tests covering all 6 routes + authenticate decorator + error branches.
+- Single integration test file: `src/auth-plugin.test.ts` — 26 tests covering all 7 routes + authenticate decorator + error branches.
 - Run: `npm test` or `npx vitest run -- src/auth-plugin.test.ts`.

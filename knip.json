@@ -3,15 +3,15 @@
     "src/index.ts"
   ],
   "project": [
-    "src/**/*.ts"
-  ],
-  "ignore": [
-    "tests/**/*.ts",
-    "vitest.config.ts",
-    "eslint.config.js"
+    "**/*.ts"
   ],
   "ignoreDependencies": [
-    "@vitest/ui"
+    "@vitest/ui",
+    "@semantic-release/npm",
+    "@semantic-release/changelog",
+    "@semantic-release/git",
+    "globals",
+    "typedoc-plugin-markdown"
   ],
   "rules": {
     "files": "error",
