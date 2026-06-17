@@ -67,7 +67,7 @@ export const DEFAULT_ROUTE_PREFIX = '/auth';
  */
 // eslint-disable-next-line @typescript-eslint/require-await, @typescript-eslint/no-misused-promises
 const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
-  // Validation des options obligatoires
+  // Validate required options
   const requiredStrings = ['accessSecret', 'refreshSecret', 'resetSecret', 'siteUrl'] as const;
   for (const key of requiredStrings) {
     if (typeof opts[key] !== 'string' || opts[key] === '') {
@@ -92,12 +92,12 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
     }
   }
 
-  // Validation du minimumAge
+  // Validate minimumAge
   if (typeof opts.minimumAge !== 'number' || opts.minimumAge < 0) {
     throw new Error('[eri-auth-system] Missing required option: minimumAge');
   }
 
-  // Validation du prefix
+  // Validate prefix
   const prefix = opts.prefix ?? DEFAULT_ROUTE_PREFIX;
   if (typeof prefix !== 'string' || !prefix.startsWith('/')) {
     throw new Error(
@@ -108,7 +108,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
     throw new Error(`[eri-auth-system] Invalid prefix: "${prefix}" — must not end with "/"`);
   }
 
-  // Décorateurs scalaires + fonctions issues des opts
+  // Scalar decorators + functions from opts
   fastify.decorate('siteUrl', fastify.siteUrl);
   fastify.decorate('minimumAge', opts.minimumAge);
   fastify.decorate('findUser', opts.findUser);
@@ -120,7 +120,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   fastify.decorate('logoutAllDevices', opts.logoutAllDevices);
   fastify.decorate('analyseError', opts.analyseError);
 
-  // Plugins tiers — pas de await
+  // Third-party plugins — no await
   fastify.register(fastifyCookie);
 
   fastify.register(fastifyJwt, {
@@ -154,7 +154,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
     sign: { expiresIn: '15m' },
   });
 
-  // Décorateur authenticate — fp() garantit sa disponibilité pour les routes
+  // authenticate decorator — fp() guarantees availability for routes
   fastify.register(authenticate);
 
   // Routes
