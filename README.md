@@ -218,6 +218,9 @@ await app.register(authPlugin, {
 await app.listen({ port: 3000 });
 ```
 
+> ⚠️ **Security notice:** `/login` and `/askPwdReset` are brute-force targets.
+> It is strongly recommended to add [@fastify/rate-limit](https://github.com/fastify/fastify-rate-limit) to your app.
+
 [↑ Back to top](#table-of-contents)
 
 ---
