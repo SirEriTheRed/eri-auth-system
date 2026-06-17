@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/SirEriTheRed/eri-auth-system/compare/v2.0.0...v3.0.0) (2026-06-17)
+
+### Features
+
+- **plugin:** add configurable route prefix option with /auth default ([bde571e](https://github.com/SirEriTheRed/eri-auth-system/commit/bde571e8d91af031c4c8ac6a1d5de7dd70582a56))
+- **signup:** make minimumAge optional with direct 403 response ([0030fef](https://github.com/SirEriTheRed/eri-auth-system/commit/0030fefc7cc38c514124ea21d6cf29c05f9bdd7b))
+
+### BREAKING CHANGES
+
+- **plugin:** the default route prefix changed from /v1/auth to /auth.
+  Consumers can pass prefix: '/v1/auth' to restore the old behaviour.
+
 # [2.0.0](https://github.com/SirEriTheRed/eri-auth-system/compare/v1.0.0...v2.0.0) (2026-06-16)
 
 ### Bug Fixes
