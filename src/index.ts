@@ -92,9 +92,12 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
     }
   }
 
-  // Validate minimumAge
-  if (typeof opts.minimumAge !== 'number' || opts.minimumAge < 0) {
-    throw new Error('[eri-auth-system] Missing required option: minimumAge');
+  // Validate minimumAge (optional)
+  if (
+    opts.minimumAge !== undefined &&
+    (typeof opts.minimumAge !== 'number' || opts.minimumAge < 0)
+  ) {
+    throw new Error('[eri-auth-system] Invalid option: minimumAge must be a non-negative number');
   }
 
   // Validate prefix

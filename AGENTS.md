@@ -1,10 +1,16 @@
 # eri-auth-system — agent guide
 
+## CI/CD pipelines
+
+- `.github/workflows/quality.yml` — lint + format:check + type-check + tests + knip on push (main/develop) and PR (main)
+- `.github/workflows/release.yml` — quality ✅ → `npm run build` + `npm run release` (semantic-release) on push main
+
 ## Commands
 
 | Command                    | Action                                                                                                                                                            |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run build`            | `tsc` — compiles `src/` → `dist/`                                                                                                                                 |
+| `npm run clean`            | `rm -rf dist` — removes build output                                                                                                                              |
 | `npm run dev`              | `tsc --watch`                                                                                                                                                     |
 | `npm run type-check`       | `tsc --noEmit` (source only)                                                                                                                                      |
 | `npm run type-check:tests` | `tsc --noEmit -p tsconfig.test.json` (source + tests)                                                                                                             |
@@ -12,8 +18,15 @@
 | `npm run lint:fix`         | `eslint . --fix`                                                                                                                                                  |
 | `npm run format`           | `prettier --write .`                                                                                                                                              |
 | `npm run format:check`     | `prettier --check .`                                                                                                                                              |
-| `npm test`                 | Runs `vitest run --coverage` — 39 integration tests covering all 7 routes + authenticate decorator. Coverage thresholds: 80% lines/functions/branches/statements. |
-| `npx knip`                 | dead-code analysis                                                                                                                                                |
+| `npm test`                 | Runs `vitest run --coverage` — 55 integration tests covering all 7 routes + authenticate decorator. Coverage thresholds: 80% lines/functions/branches/statements. |
+| `npm run test:watch`       | `vitest` — watch mode                                                                                                                                             |
+| `npm run test:ui`          | `vitest --ui` — browser UI                                                                                                                                        |
+| `npm run docs`             | `typedoc` — regenerate docs from TSDoc comments (always run after changing TSDocs)                                                                                |
+| `npm run docs:watch`       | `typedoc --watch`                                                                                                                                                 |
+| `npm run knip`             | `knip` — dead-code analysis                                                                                                                                       |
+| `npm run analyze`          | `knip` + `depcheck` — deeper dependency analysis                                                                                                                  |
+| `npm run lint:spell`       | `cspell lint \"**/*.{ts,md,json}\"` — spell-check source and docs                                                                                                 |
+| `npm run check:pack`       | `publint --strict && attw --pack` — package publishing checks                                                                                                     |
 
 ## Workflow
 

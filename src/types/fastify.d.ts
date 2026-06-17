@@ -61,9 +61,10 @@ declare module 'fastify' {
      *
      * @remarks
      * Decorated from {@link PluginOptions.minimumAge | `PluginOptions.minimumAge`}.
-     * Used in the signup route to reject underaged users.
+     * When set, the signup route rejects users below this age with a 403 response.
+     * `undefined` when the consumer did not configure a minimum age.
      */
-    minimumAge: number;
+    minimumAge?: number;
 
     /**
      * Access-token verification hook.

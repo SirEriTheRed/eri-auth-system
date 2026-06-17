@@ -102,7 +102,7 @@ graph TB
     end
 
     subgraph Plugin["@erithered/eri-auth-system"]
-        Routes["/auth/* Routes<br/>7 endpoints"]
+        Routes["/v1/auth/* Routes<br/>7 endpoints"]
         Secrets["Secrets<br/>access / refresh / reset"]
         JWT["@fastify/jwt<br/>3 namespaces"]
         Validation["Request Validation<br/>(TypeBox schemas)"]
@@ -221,6 +221,9 @@ await app.register(authPlugin, {
 
 await app.listen({ port: 3000 });
 ```
+
+> ⚠️ **Security notice:** `/login` and `/askPwdReset` are brute-force targets.
+> It is strongly recommended to add [@fastify/rate-limit](https://github.com/fastify/fastify-rate-limit) to your app.
 
 [↑ Back to top](#table-of-contents)
 

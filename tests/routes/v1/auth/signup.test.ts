@@ -64,9 +64,8 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
   });
 
   describe('age validation', () => {
-    it('returns 500 when the user is underaged', async () => {
+    it('returns 403 when the user is underaged', async () => {
       const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
-      mocks.analyseError.mockResolvedValue(null);
 
       const response = await app.inject({
         method: 'POST',
@@ -78,32 +77,13 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         },
       });
 
-      expect(response.statusCode).toBe(500);
-      expect(response.body).toBe('Unknown error during signup');
+      expect(response.statusCode).toBe(403);
+      expect(response.body).toBe('User does not meet the minimum age requirement');
       expect(mocks.createUser).not.toHaveBeenCalled();
-    });
-
-    it('returns custom analyseError message for underaged user', async () => {
-      const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
-      mocks.analyseError.mockResolvedValue('You must be at least 18 years old');
-
-      const response = await app.inject({
-        method: 'POST',
-        url: `${ROUTE_PREFIX}/signup`,
-        payload: {
-          id: 'underage-2',
-          email: 'underage2@test.com',
-          birthday: new Date(new Date().getFullYear() - 16, 0, 1).toISOString().split('T')[0],
-        },
-      });
-
-      expect(response.statusCode).toBe(500);
-      expect(response.body).toBe('You must be at least 18 years old');
     });
 
     it('allows signup when age is at minimumAge threshold', async () => {
       const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
-      mocks.createUser.mockResolvedValue(undefined);
 
       const response = await app.inject({
         method: 'POST',
@@ -131,7 +111,6 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
 
     it('allows signup when user is well above minimumAge', async () => {
       const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
-      mocks.createUser.mockResolvedValue(undefined);
 
       const oldBirthday = new Date();
       oldBirthday.setFullYear(oldBirthday.getFullYear() - 30);
@@ -148,6 +127,27 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
 
       expect(response.statusCode).toBe(201);
       expect(mocks.createUser).toHaveBeenCalled();
+    });
+
+    it('allows signup when minimumAge is not configured', async () => {
+      const { app, mocks } = await buildApp();
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `${ROUTE_PREFIX}/signup`,
+        payload: {
+          id: 'no-min-age',
+          email: 'young@test.com',
+          birthday: new Date(new Date().getFullYear() - 10, 0, 1).toISOString().split('T')[0],
+        },
+      });
+
+      expect(response.statusCode).toBe(201);
+      expect(mocks.createUser).toHaveBeenCalledWith(
+        'no-min-age',
+        'young@test.com',
+        expect.any(String)
+      );
     });
   });
 });

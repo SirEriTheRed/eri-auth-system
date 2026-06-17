@@ -35,7 +35,7 @@ export async function buildApp(
     refreshSecret: 'test-refresh-secret-0123456789012',
     resetSecret: 'test-reset-secret-012345678901234',
     siteUrl: 'http://localhost',
-    minimumAge: overrides?.minimumAge ?? 0,
+    ...(overrides?.minimumAge !== undefined ? { minimumAge: overrides.minimumAge } : {}),
     ...(overrides?.prefix !== undefined ? { prefix: overrides.prefix } : {}),
     findUser,
     createUser,
