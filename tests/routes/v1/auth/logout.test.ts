@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, signRefreshToken } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, signRefreshToken } from '../../../helpers.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('PATCH /v1/auth/logout', () => {
+describe(`PATCH ${ROUTE_PREFIX}/logout`, () => {
   it('returns 200 and revokes the token on a valid refresh cookie', async () => {
     const { app, mocks } = await buildApp();
     const token = await signRefreshToken(app);
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/logout',
+      url: `${ROUTE_PREFIX}/logout`,
       cookies: { refreshToken: token },
     });
 
@@ -26,7 +26,7 @@ describe('PATCH /v1/auth/logout', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/logout',
+      url: `${ROUTE_PREFIX}/logout`,
     });
 
     expect(response.statusCode).toBe(401);
@@ -40,7 +40,7 @@ describe('PATCH /v1/auth/logout', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/logout',
+      url: `${ROUTE_PREFIX}/logout`,
       cookies: { refreshToken: token },
     });
 
@@ -55,7 +55,7 @@ describe('PATCH /v1/auth/logout', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/logout',
+      url: `${ROUTE_PREFIX}/logout`,
       cookies: { refreshToken: token },
     });
 

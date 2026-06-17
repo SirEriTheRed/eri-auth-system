@@ -18,7 +18,7 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  *
  * @example
  * ```typescript
- * // Request:  GET /v1/auth/refresh
+ * // Request:  GET /auth/refresh
  * // Cookie:   refreshToken=eyJhbGciOiJIUzI1NiIs...
  * // Response: 200
  * // Body:     { "accessToken": "eyJhbGciOiJIUzI1NiIs..." }

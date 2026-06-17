@@ -33,7 +33,7 @@ type askPwdResetBody = Static<typeof askPwdResetBody>;
  *
  * @example
  * ```typescript
- * // Request:  POST /v1/auth/askPwdReset
+ * // Request:  POST /auth/askPwdReset
  * // Body:     { "userId": "user-1" }
  * // Response: 200 (no body — email is sent asynchronously)
  * ```

@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, signRefreshToken } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, signRefreshToken } from '../../../helpers.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('GET /v1/auth/refresh', () => {
+describe(`GET ${ROUTE_PREFIX}/refresh`, () => {
   it('returns 200 with a new accessToken when the refresh cookie is valid', async () => {
     const { app } = await buildApp();
     const token = await signRefreshToken(app);
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/refresh',
+      url: `${ROUTE_PREFIX}/refresh`,
       cookies: { refreshToken: token },
     });
 
@@ -28,7 +28,7 @@ describe('GET /v1/auth/refresh', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/refresh',
+      url: `${ROUTE_PREFIX}/refresh`,
     });
 
     expect(response.statusCode).toBe(401);
@@ -44,7 +44,7 @@ describe('GET /v1/auth/refresh', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/refresh',
+      url: `${ROUTE_PREFIX}/refresh`,
       cookies: { refreshToken: token },
     });
 

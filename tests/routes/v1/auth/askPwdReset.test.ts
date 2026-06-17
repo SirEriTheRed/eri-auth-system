@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, getPasswordHash } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, getPasswordHash } from '../../../helpers.js';
 
 let passwordHash: string;
 
@@ -12,7 +12,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('POST /v1/auth/askPwdReset', () => {
+describe(`POST ${ROUTE_PREFIX}/askPwdReset`, () => {
   it('sends a reset email when the user exists', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockResolvedValue({
@@ -23,7 +23,7 @@ describe('POST /v1/auth/askPwdReset', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/askPwdReset',
+      url: `${ROUTE_PREFIX}/askPwdReset`,
       payload: { userId: 'user-1' },
     });
 
@@ -41,7 +41,7 @@ describe('POST /v1/auth/askPwdReset', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/askPwdReset',
+      url: `${ROUTE_PREFIX}/askPwdReset`,
       payload: { userId: 'unknown' },
     });
 

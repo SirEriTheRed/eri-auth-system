@@ -24,7 +24,7 @@
 ## Architecture
 
 - **Single-package ESM repo** — publishes a `fastify-plugin` (`authPlugin` from `src/index.ts`).
-- **Entrypoint**: `src/index.ts` — decorates fastify with callbacks from `PluginOptions`, registers `@fastify/cookie`, `@fastify/jwt` (3 namespaces: access/refresh/reset), and 7 routes under `/v1/auth`.
+- **Entrypoint**: `src/index.ts` — decorates fastify with callbacks from `PluginOptions`, registers `@fastify/cookie`, `@fastify/jwt` (3 namespaces: access/refresh/reset), and 7 routes under the configured prefix (default `/auth`).
 - **Dependency injection**: no ORM/framework — consumer provides callbacks (`findUser`, `createUser`, `revokeToken`, `sendResetEmail`, `createRefreshToken`, `updateUserPassword`, `logoutAllDevices`, `analyseError`, `getTokenRevokedAt`).
 - **Type augmentation**: `src/types/fastify.d.ts` augments `@fastify/jwt` and `fastify` modules.
 

@@ -102,7 +102,7 @@ graph TB
     end
 
     subgraph Plugin["@erithered/eri-auth-system"]
-        Routes["/v1/auth/* Routes<br/>7 endpoints"]
+        Routes["/auth/* Routes<br/>7 endpoints"]
         Secrets["Secrets<br/>access / refresh / reset"]
         JWT["@fastify/jwt<br/>3 namespaces"]
         Validation["Request Validation<br/>(TypeBox schemas)"]
@@ -122,21 +122,21 @@ graph TB
     Callbacks --> DB
 ```
 
-The plugin registers 7 routes under `/v1/auth/*`. Each route uses one of three isolated @fastify/jwt namespaces (access / refresh / reset) for token handling. Business logic is delegated to consumer-provided callbacks, making the plugin agnostic to your database or ORM choice. Request validation uses TypeBox schemas. Error responses are customisable via the `analyseError` callback.
+The plugin registers 7 routes under a configurable prefix (default `/auth`). Each route uses one of three isolated @fastify/jwt namespaces (access / refresh / reset) for token handling. Business logic is delegated to consumer-provided callbacks, making the plugin agnostic to your database or ORM choice. Request validation uses TypeBox schemas. Error responses are customisable via the `analyseError` callback.
 
 ### Routes
 
-All routes are registered under the `/v1/auth` prefix.
+All routes are registered under the configured prefix (default `/auth`).
 
-| Method | Path                    | Auth   | Description                                     |
-| ------ | ----------------------- | ------ | ----------------------------------------------- |
-| POST   | `/v1/auth/signup`       | —      | Create a new user account                       |
-| POST   | `/v1/auth/login`        | —      | Authenticate with ID + password                 |
-| GET    | `/v1/auth/refresh`      | Cookie | Rotate the access token using the refresh token |
-| PATCH  | `/v1/auth/logout`       | Cookie | Revoke the current refresh token                |
-| POST   | `/v1/auth/askPwdReset`  | —      | Request a password-reset email                  |
-| PATCH  | `/v1/auth/pwdReset`     | Token  | Complete a password reset                       |
-| GET    | `/v1/auth/is-logged-in` | Bearer | Validate the current access token               |
+| Method | Path                 | Auth   | Description                                     |
+| ------ | -------------------- | ------ | ----------------------------------------------- |
+| POST   | `/auth/signup`       | —      | Create a new user account                       |
+| POST   | `/auth/login`        | —      | Authenticate with ID + password                 |
+| GET    | `/auth/refresh`      | Cookie | Rotate the access token using the refresh token |
+| PATCH  | `/auth/logout`       | Cookie | Revoke the current refresh token                |
+| POST   | `/auth/askPwdReset`  | —      | Request a password-reset email                  |
+| PATCH  | `/auth/pwdReset`     | Token  | Complete a password reset                       |
+| GET    | `/auth/is-logged-in` | Bearer | Validate the current access token               |
 
 - **Auth: Cookie** — requires a signed `refreshToken` cookie
 - **Auth: Bearer** — requires an `Authorization: Bearer <token>` header
@@ -252,7 +252,7 @@ src
 **Naming conventions:**
 
 - **Filenames** — kebab-case throughout (e.g. `ask-pwd-reset.ts`, `plugin-options.ts`)
-- **Routes** — co-located by version under `routes/v1/auth/`
+- **Routes** — co-located by version under `src/routes/v1/auth/`
 - **Plugins** — Fastify plugin decorators in `plugins/`
 - **Types** — TypeScript type definitions in `types/`
 - **Test file** — single integration test at `src/auth-plugin.test.ts`

@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, signResetToken } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, signResetToken } from '../../../helpers.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('PATCH /v1/auth/pwdReset', () => {
+describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
   it('returns 201 on a successful password reset', async () => {
     const { app, mocks } = await buildApp();
     const token = await signResetToken(app);
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/pwdReset',
+      url: `${ROUTE_PREFIX}/pwdReset`,
       payload: {
         token,
         password: 'new-password-ok',
@@ -32,7 +32,7 @@ describe('PATCH /v1/auth/pwdReset', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/pwdReset',
+      url: `${ROUTE_PREFIX}/pwdReset`,
       payload: {
         token: 'invalid-token',
         password: 'new-password-ok',
@@ -51,7 +51,7 @@ describe('PATCH /v1/auth/pwdReset', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/pwdReset',
+      url: `${ROUTE_PREFIX}/pwdReset`,
       payload: {
         token,
         password: 'password-one',
@@ -71,7 +71,7 @@ describe('PATCH /v1/auth/pwdReset', () => {
 
     const response = await app.inject({
       method: 'PATCH',
-      url: '/v1/auth/pwdReset',
+      url: `${ROUTE_PREFIX}/pwdReset`,
       payload: {
         token,
         password: 'new-password-ok',

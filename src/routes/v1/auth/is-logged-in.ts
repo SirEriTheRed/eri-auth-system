@@ -16,7 +16,7 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  *
  * @example
  * ```typescript
- * // Request:  GET /v1/auth/is-logged-in
+ * // Request:  GET /auth/is-logged-in
  * // Header:   Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
  * // Response: 200
  * // Body:     { "userId": "user-1" }

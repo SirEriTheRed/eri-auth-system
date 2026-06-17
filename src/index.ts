@@ -4,7 +4,7 @@
  *
  * A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
  * and **password-reset** token namespaces, automatic cookie handling, and seven
- * pre-built auth routes under the `/v1/auth` prefix.
+ * pre-built auth routes under a configurable prefix (default `/auth`).
  *
  * ## Quick start
  *
@@ -43,6 +43,9 @@ import { refreshRoute } from './routes/v1/auth/refresh.js';
 import { signupRoute } from './routes/v1/auth/signup.js';
 import type { PluginOptions } from './types/plugin-options.js';
 
+/** @internal Default prefix used when `PluginOptions.prefix` is not provided. */
+export const DEFAULT_ROUTE_PREFIX = '/auth';
+
 /**
  * Internal plugin callback that wires up all decorators, third-party plugins, and routes.
  *
@@ -58,7 +61,7 @@ import type { PluginOptions } from './types/plugin-options.js';
  * - Registers `@fastify/cookie` for cookie parsing/setting
  * - Registers three `@fastify/jwt` namespaces (access, refresh, reset) with their own secrets
  * - Registers the {@link authenticate} decorator for route protection
- * - Registers six routes under `/v1/auth`: login, logout, signup, refresh, askPwdReset, pwdReset
+ * - Registers six routes under the configured prefix (default `/auth`): login, logout, signup, refresh, askPwdReset, pwdReset
  *
  * @internal
  */
@@ -92,6 +95,17 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   // Validation du minimumAge
   if (typeof opts.minimumAge !== 'number' || opts.minimumAge < 0) {
     throw new Error('[eri-auth-system] Missing required option: minimumAge');
+  }
+
+  // Validation du prefix
+  const prefix = opts.prefix ?? DEFAULT_ROUTE_PREFIX;
+  if (typeof prefix !== 'string' || !prefix.startsWith('/')) {
+    throw new Error(
+      `[eri-auth-system] Invalid prefix: "${prefix}" — must be a non-empty string starting with "/"`
+    );
+  }
+  if (prefix.length > 1 && prefix.endsWith('/')) {
+    throw new Error(`[eri-auth-system] Invalid prefix: "${prefix}" — must not end with "/"`);
   }
 
   // Décorateurs scalaires + fonctions issues des opts
@@ -144,13 +158,13 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   fastify.register(authenticate);
 
   // Routes
-  fastify.register(loginRoute, { prefix: '/v1/auth' });
-  fastify.register(logoutRoute, { prefix: '/v1/auth' });
-  fastify.register(signupRoute, { prefix: '/v1/auth' });
-  fastify.register(refreshRoute, { prefix: '/v1/auth' });
-  fastify.register(askPwdResetRoute, { prefix: '/v1/auth' });
-  fastify.register(pwdResetRoute, { prefix: '/v1/auth' });
-  fastify.register(isLoggedInRoute, { prefix: '/v1/auth' });
+  fastify.register(loginRoute, { prefix });
+  fastify.register(logoutRoute, { prefix });
+  fastify.register(signupRoute, { prefix });
+  fastify.register(refreshRoute, { prefix });
+  fastify.register(askPwdResetRoute, { prefix });
+  fastify.register(pwdResetRoute, { prefix });
+  fastify.register(isLoggedInRoute, { prefix });
 };
 
 /**
@@ -169,7 +183,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  * - `@fastify/cookie` — cookie parsing and setting
  * - `@fastify/jwt` — three namespaces: `access` (15 min), `refresh` (7 days with revocation check), `reset` (15 min)
  *
- * **Routes (all under `/v1/auth`):**
+ * **Routes (all under the configured prefix, default `/auth`):**
  * - `POST /login` — authenticate with ID + password
  * - `PATCH /logout` — revoke the refresh token
  * - `POST /signup` — create a new user

@@ -43,7 +43,7 @@ type UserLoginBody = Static<typeof UserLogin>;
  *
  * @example
  * ```typescript
- * // Request:  POST /v1/auth/login
+ * // Request:  POST /auth/login
  * // Body:     { "id": "user-1", "password": "s3cret" }
  * // Response: 200
  * // Body:     { "accessToken": "eyJhbGciOiJIUzI1NiIs..." }

@@ -18,7 +18,7 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  *
  * @example
  * ```typescript
- * // Request:  PATCH /v1/auth/logout
+ * // Request:  PATCH /auth/logout
  * // Cookie:   refreshToken=eyJhbGciOiJIUzI1NiIs...
  * // Response: 200 (no body)
  * ```

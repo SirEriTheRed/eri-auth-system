@@ -8,7 +8,7 @@
 
 A Fastify plugin that adds JWT-based authentication with **access**, **refresh**,
 and **password-reset** token namespaces, automatic cookie handling, and seven
-pre-built auth routes under the `/v1/auth` prefix.
+pre-built auth routes under a configurable prefix (default `/auth`).
 
 ## Quick start
 

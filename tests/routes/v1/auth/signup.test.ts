@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildApp } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp } from '../../../helpers.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('POST /v1/auth/signup', () => {
+describe(`POST ${ROUTE_PREFIX}/signup`, () => {
   it('returns 201 on successful user creation', async () => {
     const { app, mocks } = await buildApp();
     mocks.createUser.mockResolvedValue(undefined);
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/signup',
+      url: `${ROUTE_PREFIX}/signup`,
       payload: {
         id: 'new-user',
         email: 'new@test.com',
@@ -32,7 +32,7 @@ describe('POST /v1/auth/signup', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/signup',
+      url: `${ROUTE_PREFIX}/signup`,
       payload: {
         id: 'new-user',
         email: 'new@test.com',
@@ -51,7 +51,7 @@ describe('POST /v1/auth/signup', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/signup',
+      url: `${ROUTE_PREFIX}/signup`,
       payload: {
         id: 'existing-user',
         email: 'existing@test.com',
@@ -70,7 +70,7 @@ describe('POST /v1/auth/signup', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/v1/auth/signup',
+        url: `${ROUTE_PREFIX}/signup`,
         payload: {
           id: 'underage',
           email: 'underage@test.com',
@@ -89,7 +89,7 @@ describe('POST /v1/auth/signup', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/v1/auth/signup',
+        url: `${ROUTE_PREFIX}/signup`,
         payload: {
           id: 'underage-2',
           email: 'underage2@test.com',
@@ -107,7 +107,7 @@ describe('POST /v1/auth/signup', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/v1/auth/signup',
+        url: `${ROUTE_PREFIX}/signup`,
         payload: {
           id: 'at-threshold',
           email: 'threshold@test.com',
@@ -138,7 +138,7 @@ describe('POST /v1/auth/signup', () => {
 
       const response = await app.inject({
         method: 'POST',
-        url: '/v1/auth/signup',
+        url: `${ROUTE_PREFIX}/signup`,
         payload: {
           id: 'old-enough',
           email: 'old@test.com',

@@ -1,19 +1,19 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, signAccessToken } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, signAccessToken } from '../../../helpers.js';
 
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('GET /v1/auth/is-logged-in', () => {
+describe(`GET ${ROUTE_PREFIX}/is-logged-in`, () => {
   it('returns 200 with the user payload on a valid access token', async () => {
     const { app } = await buildApp();
     const token = await signAccessToken(app);
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/is-logged-in',
+      url: `${ROUTE_PREFIX}/is-logged-in`,
       headers: { authorization: `Bearer ${token}` },
     });
 
@@ -26,7 +26,7 @@ describe('GET /v1/auth/is-logged-in', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/is-logged-in',
+      url: `${ROUTE_PREFIX}/is-logged-in`,
       headers: { authorization: 'Bearer invalid-token' },
     });
 
@@ -41,7 +41,7 @@ describe('GET /v1/auth/is-logged-in', () => {
 
     const response = await app.inject({
       method: 'GET',
-      url: '/v1/auth/is-logged-in',
+      url: `${ROUTE_PREFIX}/is-logged-in`,
     });
 
     expect(response.statusCode).toBe(401);

@@ -1,7 +1,9 @@
 import { hash } from 'argon2';
 import Fastify from 'fastify';
 
-import { authPlugin } from '../src/index.js';
+import { DEFAULT_ROUTE_PREFIX, authPlugin } from '../src/index.js';
+
+export const ROUTE_PREFIX = DEFAULT_ROUTE_PREFIX;
 
 let cachedPasswordHash: string;
 
@@ -14,7 +16,7 @@ export async function getPasswordHash(): Promise<string> {
 
 export async function buildApp(
   setup?: (app: ReturnType<typeof Fastify>) => void,
-  overrides?: { minimumAge?: number }
+  overrides?: { minimumAge?: number; prefix?: string }
 ) {
   const findUser = vi.fn();
   const createUser = vi.fn();
@@ -34,6 +36,7 @@ export async function buildApp(
     resetSecret: 'test-reset-secret-012345678901234',
     siteUrl: 'http://localhost',
     minimumAge: overrides?.minimumAge ?? 0,
+    ...(overrides?.prefix !== undefined ? { prefix: overrides.prefix } : {}),
     findUser,
     createUser,
     revokeToken,

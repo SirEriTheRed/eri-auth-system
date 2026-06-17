@@ -46,7 +46,7 @@ type PwdResetBody = Static<typeof PwdResetBody>;
  *
  * @example
  * ```typescript
- * // Request:  PATCH /v1/auth/pwdReset
+ * // Request:  PATCH /auth/pwdReset
  * // Body:     {
  * //             "token": "eyJhbGciOiJIUzI1NiIs...",
  * //             "password": "newS3cret!",

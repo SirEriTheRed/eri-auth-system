@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import { describe, expect, it, vi } from 'vitest';
 
-import { authPlugin } from '../src/index.js';
+import { DEFAULT_ROUTE_PREFIX, authPlugin } from '../src/index.js';
 
 describe('PluginOptions validation', () => {
   const validOpts = {
@@ -80,6 +80,49 @@ describe('PluginOptions validation', () => {
       await expect(app.ready()).rejects.toThrow(
         '[eri-auth-system] Missing required option: minimumAge'
       );
+    });
+  });
+
+  describe('prefix option', () => {
+    it('accepts no prefix and uses the default /auth', async () => {
+      const app = Fastify();
+      app.register(authPlugin, validOpts);
+      await app.ready();
+
+      const response = await app.inject({
+        method: 'POST',
+        url: `${DEFAULT_ROUTE_PREFIX}/login`,
+        payload: {},
+      });
+
+      // Route exists — 400 because body is empty, not 404
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('accepts a custom prefix and registers routes under it', async () => {
+      const app = Fastify();
+      app.register(authPlugin, { ...validOpts, prefix: '/api/auth' });
+      await app.ready();
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/auth/login',
+        payload: {},
+      });
+
+      expect(response.statusCode).toBe(400);
+    });
+
+    it('throws when prefix does not start with "/"', async () => {
+      const app = Fastify();
+      app.register(authPlugin, { ...validOpts, prefix: 'auth' });
+      await expect(app.ready()).rejects.toThrow('[eri-auth-system] Invalid prefix');
+    });
+
+    it('throws when prefix has a trailing slash', async () => {
+      const app = Fastify();
+      app.register(authPlugin, { ...validOpts, prefix: '/auth/' });
+      await expect(app.ready()).rejects.toThrow('[eri-auth-system] Invalid prefix');
     });
   });
 });

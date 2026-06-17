@@ -37,6 +37,23 @@ import '@fastify/cookie';
 
 export interface PluginOptions {
   /**
+   * URL prefix for all auth routes.
+   *
+   * @defaultValue '/auth'
+   *
+   * @remarks
+   * All seven route endpoints are registered under this prefix.
+   * The prefix is applied via Fastify's `register` prefix option,
+   * so route files define only their local paths (e.g. `/login`).
+   *
+   * @example
+   * '/v1/auth'   → routes become /v1/auth/login, /v1/auth/logout, …
+   * '/api/auth'  → routes become /api/auth/login, /api/auth/logout, …
+   * '/auth'      → routes become /auth/login, /auth/logout, …
+   */
+  prefix?: string;
+
+  /**
    * Secret used to sign and verify **access** tokens (short-lived, 15-minute expiry).
    *
    * @remarks

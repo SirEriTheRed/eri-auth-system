@@ -32,7 +32,7 @@ Registers the following on your Fastify instance:
 - `@fastify/cookie` — cookie parsing and setting
 - `@fastify/jwt` — three namespaces: `access` (15 min), `refresh` (7 days with revocation check), `reset` (15 min)
 
-**Routes (all under `/v1/auth`):**
+**Routes (all under the configured prefix, default `/auth`):**
 
 - `POST /login` — authenticate with ID + password
 - `PATCH /logout` — revoke the refresh token

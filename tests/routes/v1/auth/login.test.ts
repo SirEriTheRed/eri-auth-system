@@ -1,6 +1,6 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import { buildApp, getPasswordHash } from '../../../helpers.js';
+import { ROUTE_PREFIX, buildApp, getPasswordHash } from '../../../helpers.js';
 
 let passwordHash: string;
 
@@ -12,7 +12,7 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('POST /v1/auth/login', () => {
+describe(`POST ${ROUTE_PREFIX}/login`, () => {
   it('returns 200 with an accessToken on valid credentials', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockResolvedValue({
@@ -23,7 +23,7 @@ describe('POST /v1/auth/login', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/login',
+      url: `${ROUTE_PREFIX}/login`,
       payload: { id: 'user-1', password: 'correct-password' },
     });
 
@@ -40,7 +40,7 @@ describe('POST /v1/auth/login', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/login',
+      url: `${ROUTE_PREFIX}/login`,
       payload: { id: 'unknown', password: 'any' },
     });
 
@@ -58,7 +58,7 @@ describe('POST /v1/auth/login', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/login',
+      url: `${ROUTE_PREFIX}/login`,
       payload: { id: 'user-1', password: 'wrong-password' },
     });
 
@@ -72,7 +72,7 @@ describe('POST /v1/auth/login', () => {
 
     const response = await app.inject({
       method: 'POST',
-      url: '/v1/auth/login',
+      url: `${ROUTE_PREFIX}/login`,
       payload: { id: 'user-1', password: 'any' },
     });
 

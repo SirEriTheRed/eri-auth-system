@@ -47,7 +47,7 @@ type UserSignupBody = Static<typeof UserSignup>;
  *
  * @example
  * ```typescript
- * // Request:  POST /v1/auth/signup
+ * // Request:  POST /auth/signup
  * // Body:     { "id": "user-1", "email": "user@example.com", "birthday": "1990-01-15" }
  * // Response: 201
  * // Body:     "User created sucessfully"
