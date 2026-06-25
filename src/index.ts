@@ -114,6 +114,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   // Scalar decorators + functions from opts
   fastify.decorate('siteUrl', opts.siteUrl);
   fastify.decorate('minimumAge', opts.minimumAge);
+  fastify.decorate('allowedOrigins', opts.allowedOrigins ?? [new URL(opts.siteUrl).origin]);
   fastify.decorate('findUser', opts.findUser);
   fastify.decorate('createUser', opts.createUser);
   fastify.decorate('revokeToken', opts.revokeToken);
@@ -191,7 +192,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  * - `POST /login` — authenticate with ID + password
  * - `PATCH /logout` — revoke the refresh token
  * - `POST /signup` — create a new user
- * - `GET /refresh` — rotate the access token using the refresh cookie
+ * - `POST /refresh` — rotate the access token using the refresh cookie
  * - `GET /is-logged-in` — validate the current access token
  * - `POST /askPwdReset` — request a password-reset email
  * - `PATCH /pwdReset` — complete the password reset
@@ -216,6 +217,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  *     db.tokens.insert({ userId, token, expiresAt }),
  *   updateUserPassword: async (userId, hash) => db.users.updatePassword(userId, hash),
  *   logoutAllDevices: async (userId) => db.tokens.revokeAll(userId),
+ *   allowedOrigins: ['https://myapp.com'],
  *   analyseError: async (err) => (err.code === 'P2002' ? 'ID already taken' : null),
  *   getTokenRevokedAt: async (token) => db.tokens.revokedAt(token),
  * });

@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyRequest } from 'fastify';
 
 /**
- * Registers the `GET /refresh` endpoint that issues a new access token using a valid refresh token.
+ * Registers the `POST /refresh` endpoint that issues a new access token using a valid refresh token.
  *
  * @param fastify - The Fastify instance used to register the route
  *
@@ -14,23 +14,31 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  * rotation), the new refresh token is set as a cookie, and the new access token
  * is returned.
  *
- * @throws Returns a 401 with `{ error: 'Refresh token invalid, please log in' }` if the
- * refresh token is missing, expired, revoked, or otherwise invalid
+ * Returns a 403 with `{ error: 'Cross-origin request forbidden' }` if the
+ * request includes an `Origin` header that is not in the configured allowed origins.
+ *
+ * Returns a 401 with `{ error: 'Refresh token invalid, please log in' }` if the
+ * refresh token is missing, expired, revoked, or otherwise invalid.
  *
  * @example
  * ```typescript
- * // Request:  GET /auth/refresh
+ * // Request:  POST /auth/refresh
  * // Cookie:   refreshToken=eyJhbGciOiJIUzI1NiIs...
  * // Response: 200
  * // Body:     { "accessToken": "eyJhbGciOiJIUzI1NiIs..." }
  * ```
  */
 export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
-  fastify.get('/refresh', async (request: FastifyRequest, reply: FastifyReply) => {
+  fastify.post('/refresh', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       await request.refreshJwtVerify({ onlyCookie: true });
     } catch {
       return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
+    }
+
+    const origin = request.headers.origin;
+    if (origin && !fastify.allowedOrigins.includes(origin)) {
+      return reply.status(403).send({ error: 'Cross-origin request forbidden' });
     }
 
     const userId = request.refreshUser.userId;
@@ -58,7 +66,7 @@ export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) =>
         path: '/',
         secure: true,
         httpOnly: true,
-        sameSite: 'none',
+        sameSite: 'lax',
       })
       .send({ accessToken: newAccessToken });
   });

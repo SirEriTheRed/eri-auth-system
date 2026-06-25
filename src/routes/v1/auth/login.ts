@@ -44,7 +44,7 @@ type UserLoginBody = Static<typeof UserLogin>;
  * // Body:     { "id": "user-1", "password": "s3cret" }
  * // Response: 200
  * // Body:     { "accessToken": "eyJhbGciOiJIUzI1NiIs..." }
- * // Set-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=None
+ * // Set-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=Lax
  * ```
  */
 export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
@@ -84,7 +84,7 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
             path: '/',
             secure: true,
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: 'lax',
           })
           .send({ accessToken });
       } catch {

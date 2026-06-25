@@ -26,6 +26,7 @@
  *   updateUserPassword: async (userId, hashedPassword) =>
  *     db.users.updatePassword(userId, hashedPassword),
  *   logoutAllDevices: async (userId) => db.tokens.revokeAllForUser(userId),
+ *   allowedOrigins: ['https://example.com', 'https://staging.example.com'],
  *   analyseError: async (error) => error instanceof DuplicateUserError
  *     ? 'A user with this ID already exists'
  *     : null,
@@ -101,6 +102,23 @@ export interface PluginOptions {
    * before calling `createUser`. When omitted, no age validation is performed.
    */
   minimumAge?: number;
+
+  /**
+   * List of trusted origins allowed to make cross-origin requests to auth endpoints.
+   *
+   * @defaultValue The origin extracted from {@link PluginOptions.siteUrl | `siteUrl`}
+   *
+   * @remarks
+   * Used to validate the `Origin` header on the `/refresh` endpoint. If the request
+   * includes an `Origin` header that is not in this list, the route returns a 403.
+   * When omitted, defaults to the origin portion of `siteUrl`.
+   *
+   * Add entries here if your frontend runs on a different origin than `siteUrl`.
+   *
+   * @example
+   * ['https://app.example.com', 'https://staging.example.com']
+   */
+  allowedOrigins?: string[];
 
   /**
    * Callback that delivers a password-reset link to the user's email inbox.

@@ -102,6 +102,16 @@ declare module 'fastify' {
 
     /** @internal Injected from {@link PluginOptions.analyseError | `PluginOptions.analyseError`}. */
     analyseError: PluginOptions['analyseError'];
+
+    /**
+     * List of trusted origins for cross-origin request validation.
+     *
+     * @remarks
+     * Used by the `/refresh` endpoint to validate the `Origin` header.
+     * Injected from {@link PluginOptions.allowedOrigins | `PluginOptions.allowedOrigins`},
+     * or derived from {@link PluginOptions.siteUrl | `siteUrl`} when not configured.
+     */
+    allowedOrigins: string[];
   }
 
   interface FastifyRequest {

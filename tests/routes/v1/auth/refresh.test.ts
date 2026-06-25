@@ -6,15 +6,16 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe(`GET ${ROUTE_PREFIX}/refresh`, () => {
+describe(`POST ${ROUTE_PREFIX}/refresh`, () => {
   it('returns 200 with a new accessToken when the refresh cookie is valid', async () => {
     const { app } = await buildApp();
     const token = await signRefreshToken(app);
 
     const response = await app.inject({
-      method: 'GET',
+      method: 'POST',
       url: `${ROUTE_PREFIX}/refresh`,
       cookies: { refreshToken: token },
+      headers: { origin: 'http://localhost' },
     });
 
     expect(response.statusCode).toBe(200);
@@ -27,7 +28,7 @@ describe(`GET ${ROUTE_PREFIX}/refresh`, () => {
     const { app } = await buildApp();
 
     const response = await app.inject({
-      method: 'GET',
+      method: 'POST',
       url: `${ROUTE_PREFIX}/refresh`,
     });
 
@@ -43,11 +44,29 @@ describe(`GET ${ROUTE_PREFIX}/refresh`, () => {
     const token = await signRefreshToken(app);
 
     const response = await app.inject({
-      method: 'GET',
+      method: 'POST',
       url: `${ROUTE_PREFIX}/refresh`,
       cookies: { refreshToken: token },
+      headers: { origin: 'http://localhost' },
     });
 
     expect(response.statusCode).toBe(401);
+  });
+
+  it('returns 403 when the origin is not allowed', async () => {
+    const { app } = await buildApp();
+    const token = await signRefreshToken(app);
+
+    const response = await app.inject({
+      method: 'POST',
+      url: `${ROUTE_PREFIX}/refresh`,
+      cookies: { refreshToken: token },
+      headers: { origin: 'https://evil.com' },
+    });
+
+    expect(response.statusCode).toBe(403);
+    expect(JSON.parse(response.body)).toEqual({
+      error: 'Cross-origin request forbidden',
+    });
   });
 });
