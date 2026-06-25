@@ -112,7 +112,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   }
 
   // Scalar decorators + functions from opts
-  fastify.decorate('siteUrl', fastify.siteUrl);
+  fastify.decorate('siteUrl', opts.siteUrl);
   fastify.decorate('minimumAge', opts.minimumAge);
   fastify.decorate('findUser', opts.findUser);
   fastify.decorate('createUser', opts.createUser);
