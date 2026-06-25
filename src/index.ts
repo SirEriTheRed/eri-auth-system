@@ -122,6 +122,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
   fastify.decorate('updateUserPassword', opts.updateUserPassword);
   fastify.decorate('logoutAllDevices', opts.logoutAllDevices);
   fastify.decorate('analyseError', opts.analyseError);
+  fastify.decorate('getTokenRevokedAt', opts.getTokenRevokedAt);
 
   // Third-party plugins — no await
   fastify.register(fastifyCookie);
