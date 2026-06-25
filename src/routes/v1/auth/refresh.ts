@@ -8,10 +8,11 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  * @remarks
  * The route reads the `refreshToken` cookie and verifies it via `refreshJwtVerify`.
  * The verification includes the `trusted` callback that checks whether the token
- * has been revoked. On success a new access token is signed and returned.
+ * has been revoked.
  *
- * No new refresh token is issued — the existing one is reused until it expires (7 days)
- * or is explicitly revoked via logout.
+ * On success the old refresh token is revoked and a new one is issued (token
+ * rotation), the new refresh token is set as a cookie, and the new access token
+ * is returned.
  *
  * @throws Returns a 401 with `{ error: 'Refresh token invalid, please log in' }` if the
  * refresh token is missing, expired, revoked, or otherwise invalid
@@ -31,9 +32,34 @@ export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) =>
     } catch {
       return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
     }
-    const newAccessToken = await reply.accessJwtSign({
-      userId: request.refreshUser.userId,
-    });
-    return { accessToken: newAccessToken };
+
+    const userId = request.refreshUser.userId;
+
+    const oldToken = request.cookies.refreshToken;
+
+    const newRefreshToken = await reply.refreshJwtSign({ userId });
+    const decodedRefresh = fastify.jwt.refresh.decode(newRefreshToken);
+
+    if (decodedRefresh == null) {
+      return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
+    }
+
+    if (oldToken) {
+      await fastify.revokeToken(oldToken);
+    }
+
+    await fastify.createRefreshToken(userId, newRefreshToken, new Date(decodedRefresh.exp * 1000));
+
+    const newAccessToken = await reply.accessJwtSign({ userId });
+
+    reply
+      .status(200)
+      .setCookie('refreshToken', newRefreshToken, {
+        path: '/',
+        secure: true,
+        httpOnly: true,
+        sameSite: 'none',
+      })
+      .send({ accessToken: newAccessToken });
   });
 };
