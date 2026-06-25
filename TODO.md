@@ -12,7 +12,7 @@ Issues identified during code review, prioritised by severity.
 - [x] **H4** `README.md:153-159` — Documented error contract is wrong: README claims all errors follow `{ statusCode, error, message }` but actual responses are a mix of plain strings and `{ error }` objects.
 - [x] **H5** all routes — Inconsistent response format: some return plain strings, some return JSON objects, some return nothing. Unify to a single JSON contract.
 - [x] **H6** `src/routes/v1/auth/signup.ts:66-73` — `analyseError` only changes the error message, never the HTTP status code. Duplicate user gets 500, should be 409. Change return type to `{ message: string; statusCode: number } | null`.
-- [ ] **H7** `src/routes/v1/auth/signup.ts:60` + `src/utils/get-age.ts:15` — Time-zone off-by-one in age validation: `new Date('YYYY-MM-DD')` parses as UTC, but `getAge` uses local-time methods (`getMonth()`, `getDate()`). Users born on boundary dates can be mis-aged by a year in negative-UTC timezones.
+- [x] **H7** `src/routes/v1/auth/signup.ts:60` + `src/utils/get-age.ts:15` — Time-zone off-by-one in age validation: `new Date('YYYY-MM-DD')` parses as UTC, but `getAge` uses local-time methods (`getMonth()`, `getDate()`). Users born on boundary dates can be mis-aged by a year in negative-UTC timezones.
 
 ## 🟡 Medium
 
@@ -21,13 +21,13 @@ Issues identified during code review, prioritised by severity.
 - [ ] **M3** `src/types/plugin-options.ts` — All 9 callbacks are required even if consumer only uses a subset of routes (e.g. login/logout without password reset requires implementing `sendResetEmail`). Consider making per-route callbacks optional.
 - [ ] **M4** `package.json` (dependencies) — `eslint-plugin-import-x` listed in runtime `dependencies` instead of `devDependencies`. It is a linting tool, not a runtime dep.
 - [ ] **M5** `src/routes/v1/auth/ask-pwd-reset.ts:12,16` — Type naming clash: const `askPwdResetBody` (camelCase) shadows type `askPwdResetBody` (same name). Rename type to PascalCase `AskPwdResetBody`.
-- [ ] **M6** `src/routes/v1/auth/signup.ts:63,72` + `pwd-reset.ts:70,76,84,88` — Plain-string responses for both success and error. Consumers must `===`-compare strings to determine results. Convert to JSON.
+- [x] **M6** `src/routes/v1/auth/signup.ts:63,72` + `pwd-reset.ts:70,76,84,88` — Plain-string responses for both success and error. Consumers must `===`-compare strings to determine results. Convert to JSON.
 - [ ] **M7** `src/routes/v1/auth/login.ts:74` + `refresh.ts:44` — Dead branches: JWT `decode()` returning `null` immediately after a successful `sign()` is effectively impossible. Remove dead code and add a `!` assertion, or test it.
 
 ## 🔵 Low
 
 - [ ] **L1** `src/routes/v1/auth/pwd-reset.ts:66` — `let user` should be `const`. Variable is assigned once in try block and never reassigned.
-- [ ] **L2** `src/routes/v1/auth/signup.ts:70` — `let errorMessage` with subsequent `??=` can be replaced by `const errorMessage = (await ...) ?? '...'`.
+- [x] **L2** `src/routes/v1/auth/signup.ts:70` — `let errorMessage` with subsequent `??=` can be replaced by `const errorMessage = (await ...) ?? '...'`.
 - [ ] **L3** `src/routes/v1/auth/signup.ts:51` + `pwd-reset.ts:56` — Typo: "sucessfully" → "successfully" in TSDoc examples.
 - [ ] **L4** `src/routes/v1/auth/logout.ts:29` — Dead option: `{ config: { rawBody: false } }` on PATCH route appears unnecessary.
 - [ ] **L5** `src/types/plugin-options.ts:36` — Unused side-effect import: `import '@fastify/cookie'` — the file doesn't use any types from this package.
