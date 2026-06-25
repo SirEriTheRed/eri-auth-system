@@ -3,7 +3,7 @@ import tseslint from "typescript-eslint";
 import unicorn from "eslint-plugin-unicorn";
 import sonarjs from "eslint-plugin-sonarjs";
 import security from "eslint-plugin-security";
-import importPlugin from "eslint-plugin-import";
+import importPlugin from "eslint-plugin-import-x";
 import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config(
@@ -34,7 +34,7 @@ export default tseslint.config(
       unicorn,
       sonarjs,
       security,
-      import: importPlugin,
+      "import-x": importPlugin,
     },
     rules: {
       // TypeScript
@@ -79,13 +79,13 @@ export default tseslint.config(
       "security/detect-pseudoRandomBytes": "warn",
 
       // Imports
-      "import/order": ["error", {
+      "import-x/order": ["error", {
         groups: ["builtin", "external", "internal", "parent", "sibling", "index"],
         "newlines-between": "always",
         alphabetize: { order: "asc" },
       }],
-      "import/no-duplicates": "error",
-      "import/no-default-export": "error",
+      "import-x/no-duplicates": "error",
+      "import-x/no-default-export": "error",
     },
   },
   // Test files + test helpers — relax strict type-checked rules for vitest globals
@@ -109,7 +109,7 @@ export default tseslint.config(
       "@typescript-eslint/unbound-method": "off",
       "sonarjs/no-duplicate-string": "off",
       "unicorn/filename-case": "off",
-      "import/no-default-export": "off",
+      "import-x/no-default-export": "off",
     },
   },
   eslintConfigPrettier,
