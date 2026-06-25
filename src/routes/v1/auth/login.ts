@@ -90,7 +90,6 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
           })
           .send({ accessToken });
       } catch (error) {
-        console.log(error);
         let errorMessage = 'Unknown error during login';
         let errorCode = 401;
 
