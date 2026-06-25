@@ -125,4 +125,22 @@ describe('PluginOptions validation', () => {
       await expect(app.ready()).rejects.toThrow('[eri-auth-system] Invalid prefix');
     });
   });
+
+  describe('decorators are exposed', () => {
+    it('exposes getTokenRevokedAt on the fastify instance', async () => {
+      const app = Fastify();
+      await app.register(authPlugin, validOpts);
+      await app.ready();
+
+      expect(typeof app.getTokenRevokedAt).toBe('function');
+    });
+
+    it('exposes siteUrl on the fastify instance', async () => {
+      const app = Fastify();
+      await app.register(authPlugin, validOpts);
+      await app.ready();
+
+      expect(app.siteUrl).toBe('http://localhost');
+    });
+  });
 });

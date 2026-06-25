@@ -32,6 +32,8 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     expect(typeof JSON.parse(response.body).accessToken).toBe('string');
     expect(mocks.createRefreshToken).toHaveBeenCalledOnce();
     expect(mocks.findUser).toHaveBeenCalledWith('user-1');
+    expect(response.headers['set-cookie']).toBeDefined();
+    expect(response.headers['set-cookie']).not.toContain('Domain=');
   });
 
   it('returns 404 when the user is not found', async () => {
