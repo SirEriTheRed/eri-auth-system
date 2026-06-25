@@ -67,7 +67,7 @@ export const pwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) =
       try {
         user = await fastify.jwt.reset.verify(body.token);
       } catch {
-        return reply.status(401).send('This link is invalid link');
+        return reply.status(401).send('This link is invalid');
       }
 
       const userId = user.userId;
@@ -81,7 +81,7 @@ export const pwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) =
 
         await fastify.logoutAllDevices(userId);
 
-        reply.status(201).send('Password reset sucessfully');
+        reply.status(201).send('Password reset successfully');
       } catch {
         const errorMessage = 'Unknown error during password reset';
 

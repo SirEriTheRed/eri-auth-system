@@ -65,7 +65,7 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
       }
       try {
         await fastify.createUser(body.id, body.email, body.birthday);
-        reply.status(201).send('User created sucessfully');
+        reply.status(201).send('User created successfully');
       } catch (error: unknown) {
         let errorMessage = await fastify.analyseError(error);
         errorMessage ??= 'Unknown error during signup';
