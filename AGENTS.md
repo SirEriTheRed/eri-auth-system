@@ -43,7 +43,6 @@
 
 ## Orphaned / stale
 
-- `src/routes/v1/auth/test-login.ts` — exists but **not imported** in `src/index.ts`.
 - `dist/` is stale (out of sync with `src/`). Run `npm run build` to regenerate.
 
 ## Style conventions
