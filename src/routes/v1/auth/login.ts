@@ -82,7 +82,6 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
         reply
           .status(200)
           .setCookie('refreshToken', refreshToken, {
-            domain: 'localhost',
             path: '/',
             secure: true,
             httpOnly: true,
