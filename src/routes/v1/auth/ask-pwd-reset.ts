@@ -33,7 +33,8 @@ type askPwdResetBody = Static<typeof askPwdResetBody>;
  * ```typescript
  * // Request:  POST /auth/askPwdReset
  * // Body:     { "userId": "user-1" }
- * // Response: 200 (no body — email is sent asynchronously)
+ * // Response: 200
+ * // Body:     { "message": "If the user exists, an email has been sent" }
  * ```
  */
 export const askPwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
@@ -46,7 +47,7 @@ export const askPwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance
       const user = await fastify.findUser(body.userId);
 
       if (user == null) {
-        return reply.status(200).send();
+        return reply.status(200).send({ message: 'If the user exists, an email has been sent' });
       }
 
       const resetToken = await reply.resetJwtSign({ userId: user.id });

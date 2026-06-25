@@ -22,7 +22,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toBe('User created successfully');
+    expect(JSON.parse(response.body)).toEqual({ message: 'User created successfully' });
     expect(mocks.createUser).toHaveBeenCalledWith('new-user', 'new@test.com', '2000-01-01');
   });
 
@@ -41,7 +41,11 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('Unknown error during signup');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'Unknown error during signup',
+    });
   });
 
   it('returns custom message when analyseError returns one', async () => {
@@ -60,7 +64,11 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('This user ID is already taken');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'This user ID is already taken',
+    });
   });
 
   describe('age validation', () => {
@@ -78,7 +86,11 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
       });
 
       expect(response.statusCode).toBe(403);
-      expect(response.body).toBe('User does not meet the minimum age requirement');
+      expect(JSON.parse(response.body)).toEqual({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'User does not meet the minimum age requirement',
+      });
       expect(mocks.createUser).not.toHaveBeenCalled();
     });
 

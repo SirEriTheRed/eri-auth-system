@@ -57,12 +57,16 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
         const user = await fastify.findUser(body.id);
 
         if (!user) {
-          reply.status(401).send('Invalid credentials');
+          reply
+            .status(401)
+            .send({ statusCode: 401, error: 'Unauthorized', message: 'Invalid credentials' });
           return;
         }
 
         if (!(await verify(user.hashedPassword, body.password))) {
-          reply.status(401).send('Invalid credentials');
+          reply
+            .status(401)
+            .send({ statusCode: 401, error: 'Unauthorized', message: 'Invalid credentials' });
           return;
         }
         const accessToken = await reply.accessJwtSign({ userId: user.id });
@@ -88,7 +92,11 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
           })
           .send({ accessToken });
       } catch {
-        reply.status(500).send('Internal server error');
+        reply.status(500).send({
+          statusCode: 500,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        });
       }
     }
   );

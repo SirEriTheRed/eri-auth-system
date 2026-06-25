@@ -47,7 +47,7 @@ type UserSignupBody = Static<typeof UserSignup>;
  * // Request:  POST /auth/signup
  * // Body:     { "id": "user-1", "email": "user@example.com", "birthday": "1990-01-15" }
  * // Response: 201
- * // Body:     "User created sucessfully"
+ * // Body:     { "message": "User created sucessfully" }
  * ```
  */
 export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
@@ -64,16 +64,22 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
         );
         const age = getAge(birthday);
         if (age < fastify.minimumAge) {
-          return reply.status(403).send('User does not meet the minimum age requirement');
+          return reply.status(403).send({
+            statusCode: 403,
+            error: 'Forbidden',
+            message: 'User does not meet the minimum age requirement',
+          });
         }
       }
       try {
         await fastify.createUser(body.id, body.email, body.birthday);
-        reply.status(201).send('User created successfully');
+        reply.status(201).send({ message: 'User created successfully' });
       } catch (error: unknown) {
         let errorMessage = await fastify.analyseError(error);
         errorMessage ??= 'Unknown error during signup';
-        reply.status(500).send(errorMessage);
+        reply
+          .status(500)
+          .send({ statusCode: 500, error: 'Internal Server Error', message: errorMessage });
       }
     }
   );

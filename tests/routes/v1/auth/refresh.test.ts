@@ -34,7 +34,9 @@ describe(`POST ${ROUTE_PREFIX}/refresh`, () => {
 
     expect(response.statusCode).toBe(401);
     expect(JSON.parse(response.body)).toEqual({
-      error: 'Refresh token invalid, please log in',
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Refresh token invalid, please log in',
     });
   });
 
@@ -66,7 +68,9 @@ describe(`POST ${ROUTE_PREFIX}/refresh`, () => {
 
     expect(response.statusCode).toBe(403);
     expect(JSON.parse(response.body)).toEqual({
-      error: 'Cross-origin request forbidden',
+      statusCode: 403,
+      error: 'Forbidden',
+      message: 'Cross-origin request forbidden',
     });
   });
 });

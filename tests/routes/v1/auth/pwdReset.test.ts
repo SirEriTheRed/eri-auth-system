@@ -22,7 +22,7 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toBe('Password reset successfully');
+    expect(JSON.parse(response.body)).toEqual({ message: 'Password reset successfully' });
     expect(mocks.updateUserPassword).toHaveBeenCalledWith('user-1', expect.any(String));
     expect(mocks.logoutAllDevices).toHaveBeenCalledWith('user-1');
   });
@@ -41,7 +41,11 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('This link is invalid');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'This link is invalid',
+    });
     expect(mocks.updateUserPassword).not.toHaveBeenCalled();
   });
 
@@ -60,7 +64,11 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.body).toBe('Passwords do not match');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 400,
+      error: 'Bad Request',
+      message: 'Passwords do not match',
+    });
     expect(mocks.updateUserPassword).not.toHaveBeenCalled();
   });
 
@@ -80,6 +88,10 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('Unknown error during password reset');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'Unknown error during password reset',
+    });
   });
 });

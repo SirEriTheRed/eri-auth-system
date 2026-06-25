@@ -53,7 +53,7 @@ type PwdResetBody = Static<typeof PwdResetBody>;
  * //             "passwordConfirm": "newS3cret!"
  * //           }
  * // Response: 201
- * // Body:     "Password reset sucessfully"
+ * // Body:     { "message": "Password reset sucessfully" }
  * ```
  */
 export const pwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
@@ -67,13 +67,21 @@ export const pwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) =
       try {
         user = await fastify.jwt.reset.verify(body.token);
       } catch {
-        return reply.status(401).send('This link is invalid');
+        return reply.status(401).send({
+          statusCode: 401,
+          error: 'Unauthorized',
+          message: 'This link is invalid',
+        });
       }
 
       const userId = user.userId;
 
       if (body.password !== body.passwordConfirm) {
-        return reply.status(400).send('Passwords do not match');
+        return reply.status(400).send({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Passwords do not match',
+        });
       }
 
       try {
@@ -81,11 +89,15 @@ export const pwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance) =
 
         await fastify.logoutAllDevices(userId);
 
-        reply.status(201).send('Password reset successfully');
+        reply.status(201).send({ message: 'Password reset successfully' });
       } catch {
         const errorMessage = 'Unknown error during password reset';
 
-        reply.status(500).send(errorMessage);
+        reply.status(500).send({
+          statusCode: 500,
+          error: 'Internal Server Error',
+          message: errorMessage,
+        });
       }
     }
   );

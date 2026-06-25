@@ -74,7 +74,7 @@ declare module 'fastify' {
      *
      * @remarks
      * Used as an `onRequest` or `preHandler` hook on protected routes.
-     * Returns a 401 response with `{ error: 'Access token invalid, please refresh the token' }`
+     * Returns a 401 response with `{ statusCode: 401, error: 'Unauthorized', message: 'Access token invalid, please refresh the token' }`
      * when verification fails.
      */
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;

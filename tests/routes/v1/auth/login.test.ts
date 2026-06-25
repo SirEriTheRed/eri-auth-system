@@ -47,7 +47,11 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('Invalid credentials');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Invalid credentials',
+    });
   });
 
   it('returns 401 when the password is wrong', async () => {
@@ -65,7 +69,11 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('Invalid credentials');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Invalid credentials',
+    });
   });
 
   it('returns 500 for unexpected errors', async () => {
@@ -79,6 +87,10 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('Internal server error');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'Internal server error',
+    });
   });
 });

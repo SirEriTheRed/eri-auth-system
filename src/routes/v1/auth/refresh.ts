@@ -14,11 +14,11 @@ import type { FastifyInstance, FastifyPluginCallback, FastifyReply, FastifyReque
  * rotation), the new refresh token is set as a cookie, and the new access token
  * is returned.
  *
- * Returns a 403 with `{ error: 'Cross-origin request forbidden' }` if the
- * request includes an `Origin` header that is not in the configured allowed origins.
+ * Returns a 403 with `{ statusCode: 403, error: 'Forbidden', message: 'Cross-origin request forbidden' }`
+ * if the request includes an `Origin` header that is not in the configured allowed origins.
  *
- * Returns a 401 with `{ error: 'Refresh token invalid, please log in' }` if the
- * refresh token is missing, expired, revoked, or otherwise invalid.
+ * Returns a 401 with `{ statusCode: 401, error: 'Unauthorized', message: 'Refresh token invalid, please log in' }`
+ * if the refresh token is missing, expired, revoked, or otherwise invalid.
  *
  * @example
  * ```typescript
@@ -33,12 +33,20 @@ export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) =>
     try {
       await request.refreshJwtVerify({ onlyCookie: true });
     } catch {
-      return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
+      return reply.status(401).send({
+        statusCode: 401,
+        error: 'Unauthorized',
+        message: 'Refresh token invalid, please log in',
+      });
     }
 
     const origin = request.headers.origin;
     if (origin && !fastify.allowedOrigins.includes(origin)) {
-      return reply.status(403).send({ error: 'Cross-origin request forbidden' });
+      return reply.status(403).send({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'Cross-origin request forbidden',
+      });
     }
 
     const userId = request.refreshUser.userId;
@@ -49,7 +57,11 @@ export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) =>
     const decodedRefresh = fastify.jwt.refresh.decode<{ exp: number }>(newRefreshToken);
 
     if (decodedRefresh == null) {
-      return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
+      return reply.status(401).send({
+        statusCode: 401,
+        error: 'Unauthorized',
+        message: 'Refresh token invalid, please log in',
+      });
     }
 
     if (oldToken) {
