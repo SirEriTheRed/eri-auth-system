@@ -103,6 +103,9 @@ declare module 'fastify' {
     /** @internal Injected from {@link PluginOptions.analyseError | `PluginOptions.analyseError`}. */
     analyseError: PluginOptions['analyseError'];
 
+    /** @internal Injected from {@link PluginOptions.getTokenRevokedAt | `PluginOptions.getTokenRevokedAt`}. */
+    getTokenRevokedAt: PluginOptions['getTokenRevokedAt'];
+
     /**
      * List of trusted origins for cross-origin request validation.
      *
