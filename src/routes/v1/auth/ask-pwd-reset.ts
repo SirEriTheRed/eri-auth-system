@@ -26,10 +26,8 @@ type askPwdResetBody = Static<typeof askPwdResetBody>;
  * via the consumer-provided
  * {@link PluginOptions.sendResetEmail | `sendResetEmail`} callback.
  *
- * If the user ID does not exist an error is thrown — note that in a production
- * system you may want to return a generic response to avoid user-enumeration attacks.
- *
- * @throws {Error} With message `'User not found'` if no user exists with the given ID
+ * If the user ID does not exist a generic 200 is returned (no email sent) to
+ * prevent user-enumeration attacks.
  *
  * @example
  * ```typescript
@@ -48,7 +46,7 @@ export const askPwdResetRoute: FastifyPluginCallback = (fastify: FastifyInstance
       const user = await fastify.findUser(body.userId);
 
       if (user == null) {
-        throw new Error('User not found');
+        return reply.status(200).send();
       }
 
       const resetToken = await reply.resetJwtSign({ userId: user.id });

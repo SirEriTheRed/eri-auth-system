@@ -38,7 +38,7 @@ export const refreshRoute: FastifyPluginCallback = (fastify: FastifyInstance) =>
     const oldToken = request.cookies.refreshToken;
 
     const newRefreshToken = await reply.refreshJwtSign({ userId });
-    const decodedRefresh = fastify.jwt.refresh.decode(newRefreshToken);
+    const decodedRefresh = fastify.jwt.refresh.decode<{ exp: number }>(newRefreshToken);
 
     if (decodedRefresh == null) {
       return reply.status(401).send({ error: 'Refresh token invalid, please log in' });
