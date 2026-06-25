@@ -57,7 +57,11 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
     async (request: FastifyRequest<{ Body: UserSignupBody }>, reply: FastifyReply) => {
       const body: UserSignupBody = request.body;
       if (fastify.minimumAge !== undefined) {
-        const birthday: Date = new Date(body.birthday);
+        const birthday = new Date(
+          Number(body.birthday.slice(0, 4)),
+          Number(body.birthday.slice(5, 7)) - 1,
+          Number(body.birthday.slice(8, 10))
+        );
         const age = getAge(birthday);
         if (age < fastify.minimumAge) {
           return reply.status(403).send('User does not meet the minimum age requirement');

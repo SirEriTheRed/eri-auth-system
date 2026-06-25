@@ -73,7 +73,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'underage',
           email: 'underage@test.com',
-          birthday: new Date(new Date().getFullYear() - 16, 0, 1).toISOString().split('T')[0],
+          birthday: `${new Date().getFullYear() - 16}-01-01`,
         },
       });
 
@@ -91,13 +91,10 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'at-threshold',
           email: 'threshold@test.com',
-          birthday: new Date(
-            new Date().getFullYear() - 18,
-            new Date().getMonth(),
-            new Date().getDate()
-          )
-            .toISOString()
-            .split('T')[0],
+          birthday: (() => {
+            const today = new Date();
+            return `${today.getFullYear() - 18}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+          })(),
         },
       });
 
@@ -112,8 +109,8 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     it('allows signup when user is well above minimumAge', async () => {
       const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
 
-      const oldBirthday = new Date();
-      oldBirthday.setFullYear(oldBirthday.getFullYear() - 30);
+      const today = new Date();
+      const birthday = `${today.getFullYear() - 30}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
       const response = await app.inject({
         method: 'POST',
@@ -121,7 +118,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'old-enough',
           email: 'old@test.com',
-          birthday: oldBirthday.toISOString().split('T')[0],
+          birthday,
         },
       });
 
@@ -138,7 +135,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'no-min-age',
           email: 'young@test.com',
-          birthday: new Date(new Date().getFullYear() - 10, 0, 1).toISOString().split('T')[0],
+          birthday: `${new Date().getFullYear() - 10}-01-01`,
         },
       });
 
