@@ -51,7 +51,10 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
   it('returns custom message when analyseError returns one', async () => {
     const { app, mocks } = await buildApp();
     mocks.createUser.mockRejectedValue(new Error('duplicate'));
-    mocks.analyseError.mockResolvedValue('This user ID is already taken');
+    mocks.analyseError.mockResolvedValue({
+      message: 'This user ID is already taken',
+      statusCode: 409,
+    });
 
     const response = await app.inject({
       method: 'POST',
@@ -63,10 +66,10 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
       },
     });
 
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(409);
     expect(JSON.parse(response.body)).toEqual({
-      statusCode: 500,
-      error: 'Internal Server Error',
+      statusCode: 409,
+      error: 'Conflict',
       message: 'This user ID is already taken',
     });
   });

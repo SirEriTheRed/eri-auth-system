@@ -11,7 +11,7 @@ Issues identified during code review, prioritised by severity.
 - [x] **H3** `src/routes/v1/auth/refresh.ts:28-33` + `login.ts:84-89` — CSRF-vulnerable: `/refresh` is GET (fetchable cross-origin via `<img>`/`<script>`), cookie is `sameSite: 'none'`, no CSRF token or Origin check. Change to POST, add Origin validation.
 - [x] **H4** `README.md:153-159` — Documented error contract is wrong: README claims all errors follow `{ statusCode, error, message }` but actual responses are a mix of plain strings and `{ error }` objects.
 - [x] **H5** all routes — Inconsistent response format: some return plain strings, some return JSON objects, some return nothing. Unify to a single JSON contract.
-- [ ] **H6** `src/routes/v1/auth/signup.ts:66-73` — `analyseError` only changes the error message, never the HTTP status code. Duplicate user gets 500, should be 409. Change return type to `{ message: string; statusCode: number } | null`.
+- [x] **H6** `src/routes/v1/auth/signup.ts:66-73` — `analyseError` only changes the error message, never the HTTP status code. Duplicate user gets 500, should be 409. Change return type to `{ message: string; statusCode: number } | null`.
 - [ ] **H7** `src/routes/v1/auth/signup.ts:60` + `src/utils/get-age.ts:15` — Time-zone off-by-one in age validation: `new Date('YYYY-MM-DD')` parses as UTC, but `getAge` uses local-time methods (`getMonth()`, `getDate()`). Users born on boundary dates can be mis-aged by a year in negative-UTC timezones.
 
 ## 🟡 Medium

@@ -218,7 +218,7 @@ const auth: FastifyPluginCallback<PluginOptions> = async (fastify, opts) => {
  *   updateUserPassword: async (userId, hash) => db.users.updatePassword(userId, hash),
  *   logoutAllDevices: async (userId) => db.tokens.revokeAll(userId),
  *   allowedOrigins: ['https://myapp.com'],
- *   analyseError: async (err) => (err.code === 'P2002' ? 'ID already taken' : null),
+ *   analyseError: async (err) => (err.code === 'P2002' ? { message: 'ID already taken', statusCode: 409 } : null),
  *   getTokenRevokedAt: async (token) => db.tokens.revokedAt(token),
  * });
  *

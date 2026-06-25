@@ -8,7 +8,7 @@
 
 > `const` **authPlugin**: `FastifyPluginCallback`\<[`PluginOptions`](../interfaces/PluginOptions.md)\>
 
-Defined in: [index.ts:230](https://github.com/SirEriTheRed/eri-auth-system/blob/9e13d2f86bdeff5349b8b0107740ca71c9bbd689/src/index.ts#L230)
+Defined in: [index.ts:230](https://github.com/SirEriTheRed/eri-auth-system/blob/e63fbe4e0b0d14c5a94c3f3fcebc6f71be3f7dea/src/index.ts#L230)
 
 Ready-to-use Fastify plugin that adds complete JWT authentication.
 
@@ -64,7 +64,8 @@ await app.register(authPlugin, {
   updateUserPassword: async (userId, hash) => db.users.updatePassword(userId, hash),
   logoutAllDevices: async (userId) => db.tokens.revokeAll(userId),
   allowedOrigins: ['https://myapp.com'],
-  analyseError: async (err) => (err.code === 'P2002' ? 'ID already taken' : null),
+  analyseError: async (err) =>
+    err.code === 'P2002' ? { message: 'ID already taken', statusCode: 409 } : null,
   getTokenRevokedAt: async (token) => db.tokens.revokedAt(token),
 });
 

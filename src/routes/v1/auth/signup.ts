@@ -3,6 +3,7 @@ import { Type } from '@sinclair/typebox';
 import type { FastifyReply, FastifyRequest, FastifyInstance, FastifyPluginCallback } from 'fastify';
 
 import { getAge } from '../../../utils/get-age.js';
+import { httpStatusLabel } from '../../../utils/http-status-label.js';
 
 /**
  * JSON body schema for the signup request.
@@ -75,11 +76,10 @@ export const signupRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
         await fastify.createUser(body.id, body.email, body.birthday);
         reply.status(201).send({ message: 'User created successfully' });
       } catch (error: unknown) {
-        let errorMessage = await fastify.analyseError(error);
-        errorMessage ??= 'Unknown error during signup';
-        reply
-          .status(500)
-          .send({ statusCode: 500, error: 'Internal Server Error', message: errorMessage });
+        const analysis = await fastify.analyseError(error);
+        const statusCode = analysis?.statusCode ?? 500;
+        const message = analysis?.message ?? 'Unknown error during signup';
+        reply.status(statusCode).send({ statusCode, error: httpStatusLabel(statusCode), message });
       }
     }
   );
