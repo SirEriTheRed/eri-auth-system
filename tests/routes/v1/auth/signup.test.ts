@@ -22,7 +22,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toBe('User created sucessfully');
+    expect(response.body).toBe('User created successfully');
     expect(mocks.createUser).toHaveBeenCalledWith('new-user', 'new@test.com', '2000-01-01');
   });
 

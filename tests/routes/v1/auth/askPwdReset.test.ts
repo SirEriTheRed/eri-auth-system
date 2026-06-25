@@ -35,7 +35,7 @@ describe(`POST ${ROUTE_PREFIX}/askPwdReset`, () => {
     expect(resetLink).toContain('/reset-password?token=');
   });
 
-  it('throws an error when the user is not found', async () => {
+  it('returns 200 when the user is not found to prevent enumeration', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockResolvedValue(null);
 
@@ -45,7 +45,7 @@ describe(`POST ${ROUTE_PREFIX}/askPwdReset`, () => {
       payload: { userId: 'unknown' },
     });
 
-    expect(response.statusCode).toBe(500);
+    expect(response.statusCode).toBe(200);
     expect(mocks.sendResetEmail).not.toHaveBeenCalled();
   });
 });

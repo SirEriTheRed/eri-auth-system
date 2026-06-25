@@ -22,7 +22,7 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toBe('Password reset sucessfully');
+    expect(response.body).toBe('Password reset successfully');
     expect(mocks.updateUserPassword).toHaveBeenCalledWith('user-1', expect.any(String));
     expect(mocks.logoutAllDevices).toHaveBeenCalledWith('user-1');
   });
@@ -41,7 +41,7 @@ describe(`PATCH ${ROUTE_PREFIX}/pwdReset`, () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('This link is invalid link');
+    expect(response.body).toBe('This link is invalid');
     expect(mocks.updateUserPassword).not.toHaveBeenCalled();
   });
 
