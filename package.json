@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "argon2": "^0.44.0",
-    "fastify-plugin": "^4.0.0"
+    "fastify-plugin": "^6.0.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.3",
