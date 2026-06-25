@@ -31,8 +31,8 @@ export const logoutRoute: FastifyPluginCallback = (fastify: FastifyInstance) => 
       try {
         await request.refreshJwtVerify({ onlyCookie: true });
         await fastify.revokeToken(request.cookies.refreshToken);
-      } catch (error) {
-        reply.code(401).send({ error: error });
+      } catch {
+        reply.code(401).send({ error: 'Unauthorized' });
       }
     }
   );
