@@ -71,7 +71,7 @@
   },
   "dependencies": {
     "argon2": "^0.44.0",
-    "eslint-plugin-import-x": "^4.17.0",
+    "eslint-plugin-import-x": "^4.17.1",
     "fastify-plugin": "^6.0.0"
   },
   "devDependencies": {
