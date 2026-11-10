@@ -31,7 +31,8 @@ export const authenticate = fp((fastify) => {
    *
    * @remarks
    * On successful verification the request flow continues normally.
-   * On failure the reply sends a 401 with `{ error: 'Access token invalid, please refresh the token' }`
+   * On failure the reply sends a 401 with
+   * `{ statusCode: 401, error: 'Unauthorized', message: 'Access token invalid, please refresh the token' }`
    * and processing stops — the route handler is never invoked.
    *
    * @throws Never throws to the caller — failures are caught internally and converted
@@ -41,7 +42,11 @@ export const authenticate = fp((fastify) => {
     try {
       await request.accessJwtVerify();
     } catch {
-      return reply.status(401).send({ error: 'Access token invalid, please refresh the token' });
+      return reply.status(401).send({
+        statusCode: 401,
+        error: 'Unauthorized',
+        message: 'Access token invalid, please refresh the token',
+      });
     }
   });
 });

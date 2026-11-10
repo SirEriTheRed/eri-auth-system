@@ -36,7 +36,9 @@ describe('authenticate decorator', () => {
 
     expect(response.statusCode).toBe(401);
     expect(JSON.parse(response.body)).toEqual({
-      error: 'Access token invalid, please refresh the token',
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Access token invalid, please refresh the token',
     });
   });
 

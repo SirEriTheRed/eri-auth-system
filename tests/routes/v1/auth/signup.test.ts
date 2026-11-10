@@ -22,7 +22,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(201);
-    expect(response.body).toBe('User created successfully');
+    expect(JSON.parse(response.body)).toEqual({ message: 'User created successfully' });
     expect(mocks.createUser).toHaveBeenCalledWith('new-user', 'new@test.com', '2000-01-01');
   });
 
@@ -41,13 +41,20 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     });
 
     expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('Unknown error during signup');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'Unknown error during signup',
+    });
   });
 
   it('returns custom message when analyseError returns one', async () => {
     const { app, mocks } = await buildApp();
     mocks.createUser.mockRejectedValue(new Error('duplicate'));
-    mocks.analyseError.mockResolvedValue('This user ID is already taken');
+    mocks.analyseError.mockResolvedValue({
+      message: 'This user ID is already taken',
+      statusCode: 409,
+    });
 
     const response = await app.inject({
       method: 'POST',
@@ -59,8 +66,12 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
       },
     });
 
-    expect(response.statusCode).toBe(500);
-    expect(response.body).toBe('This user ID is already taken');
+    expect(response.statusCode).toBe(409);
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 409,
+      error: 'Conflict',
+      message: 'This user ID is already taken',
+    });
   });
 
   describe('age validation', () => {
@@ -73,12 +84,16 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'underage',
           email: 'underage@test.com',
-          birthday: new Date(new Date().getFullYear() - 16, 0, 1).toISOString().split('T')[0],
+          birthday: `${new Date().getFullYear() - 16}-01-01`,
         },
       });
 
       expect(response.statusCode).toBe(403);
-      expect(response.body).toBe('User does not meet the minimum age requirement');
+      expect(JSON.parse(response.body)).toEqual({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'User does not meet the minimum age requirement',
+      });
       expect(mocks.createUser).not.toHaveBeenCalled();
     });
 
@@ -91,13 +106,10 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'at-threshold',
           email: 'threshold@test.com',
-          birthday: new Date(
-            new Date().getFullYear() - 18,
-            new Date().getMonth(),
-            new Date().getDate()
-          )
-            .toISOString()
-            .split('T')[0],
+          birthday: (() => {
+            const today = new Date();
+            return `${today.getFullYear() - 18}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+          })(),
         },
       });
 
@@ -112,8 +124,8 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
     it('allows signup when user is well above minimumAge', async () => {
       const { app, mocks } = await buildApp(undefined, { minimumAge: 18 });
 
-      const oldBirthday = new Date();
-      oldBirthday.setFullYear(oldBirthday.getFullYear() - 30);
+      const today = new Date();
+      const birthday = `${today.getFullYear() - 30}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
       const response = await app.inject({
         method: 'POST',
@@ -121,7 +133,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'old-enough',
           email: 'old@test.com',
-          birthday: oldBirthday.toISOString().split('T')[0],
+          birthday,
         },
       });
 
@@ -138,7 +150,7 @@ describe(`POST ${ROUTE_PREFIX}/signup`, () => {
         payload: {
           id: 'no-min-age',
           email: 'young@test.com',
-          birthday: new Date(new Date().getFullYear() - 10, 0, 1).toISOString().split('T')[0],
+          birthday: `${new Date().getFullYear() - 10}-01-01`,
         },
       });
 

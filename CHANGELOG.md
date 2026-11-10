@@ -1,3 +1,24 @@
+# [4.0.0](https://github.com/SirEriTheRed/eri-auth-system/compare/v3.1.0...v4.0.0) (2026-06-25)
+
+### Bug Fixes
+
+- **auth:** change /refresh to POST with origin validation, add allowedOrigins ([843071a](https://github.com/SirEriTheRed/eri-auth-system/commit/843071a907fa32af674072983b29026ba39ec389))
+- **login:** replace control-flow throws with early returns, fix error codes ([fda83d3](https://github.com/SirEriTheRed/eri-auth-system/commit/fda83d3571f0aaf9616c0053c9dd6dd8f1a9329d))
+- **signup:** parse birthday as local date to avoid timezone off-by-one ([02fbfb3](https://github.com/SirEriTheRed/eri-auth-system/commit/02fbfb3830238644c6645f6be14c7a9b3faf6904))
+
+### Features
+
+- allow analyseError to override HTTP status code ([9667bb9](https://github.com/SirEriTheRed/eri-auth-system/commit/9667bb942a4ebc666ead6b2a65e8de2fe7aba348))
+- unify all route responses to consistent JSON contract ([9e13d2f](https://github.com/SirEriTheRed/eri-auth-system/commit/9e13d2f86bdeff5349b8b0107740ca71c9bbd689))
+
+### BREAKING CHANGES
+
+- analyseError return type changed from
+  Promise<string | null> to Promise<{ message: string;
+  statusCode: number } | null>.
+- All response bodies have changed shape. Consumers
+  must update error handling and success parsing logic.
+
 # [3.1.0](https://github.com/SirEriTheRed/eri-auth-system/compare/v3.0.0...v3.1.0) (2026-06-25)
 
 ### Bug Fixes

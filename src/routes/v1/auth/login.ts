@@ -38,16 +38,13 @@ type UserLoginBody = Static<typeof UserLogin>;
  * 4. Sign a refresh token (7 day expiry) and persist it
  * 5. Return the access token in the body and set the refresh token as a cookie
  *
- * @throws {Error} With `cause: 'Not Found'` if the user ID does not exist — results in a 404 response
- * @throws {Error} With `cause: 'Invalid Password'` if the password does not match — results in a 401 response
- *
  * @example
  * ```typescript
  * // Request:  POST /auth/login
  * // Body:     { "id": "user-1", "password": "s3cret" }
  * // Response: 200
  * // Body:     { "accessToken": "eyJhbGciOiJIUzI1NiIs..." }
- * // Set-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=None
+ * // Set-Cookie: refreshToken=eyJhbGciOiJIUzI1NiIs...; HttpOnly; Secure; SameSite=Lax
  * ```
  */
 export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
@@ -60,11 +57,17 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
         const user = await fastify.findUser(body.id);
 
         if (!user) {
-          throw new Error('', { cause: 'Not Found' });
+          reply
+            .status(401)
+            .send({ statusCode: 401, error: 'Unauthorized', message: 'Invalid credentials' });
+          return;
         }
 
         if (!(await verify(user.hashedPassword, body.password))) {
-          throw new Error('', { cause: 'Invalid Password' });
+          reply
+            .status(401)
+            .send({ statusCode: 401, error: 'Unauthorized', message: 'Invalid credentials' });
+          return;
         }
         const accessToken = await reply.accessJwtSign({ userId: user.id });
         const refreshToken = await reply.refreshJwtSign({ userId: user.id });
@@ -85,31 +88,15 @@ export const loginRoute: FastifyPluginCallback = (fastify: FastifyInstance) => {
             path: '/',
             secure: true,
             httpOnly: true,
-            sameSite: 'none',
+            sameSite: 'lax',
           })
           .send({ accessToken });
-      } catch (error) {
-        let errorMessage = 'Unknown error during login';
-        let errorCode = 401;
-
-        if (error instanceof Error) {
-          switch (error.cause) {
-            case 'Not Found':
-              errorCode = 404;
-              errorMessage = 'Could not find an user with this id';
-              break;
-
-            case 'Invalid Password':
-              errorMessage = 'This password is invalid';
-              errorCode = 401;
-              break;
-
-            default:
-              break;
-          }
-        }
-
-        reply.status(errorCode).send(errorMessage);
+      } catch {
+        reply.status(500).send({
+          statusCode: 500,
+          error: 'Internal Server Error',
+          message: 'Internal server error',
+        });
       }
     }
   );

@@ -6,7 +6,7 @@
 
 # Interface: PluginOptions
 
-Defined in: [types/plugin-options.ts:38](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L38)
+Defined in: [types/plugin-options.ts:39](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L39)
 
 Re-exported for convenience.
 
@@ -20,7 +20,7 @@ PluginOptions for the complete configuration reference
 
 > **accessSecret**: `string`
 
-Defined in: [types/plugin-options.ts:64](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L64)
+Defined in: [types/plugin-options.ts:65](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L65)
 
 Secret used to sign and verify **access** tokens (short-lived, 15-minute expiry).
 
@@ -32,13 +32,41 @@ in an environment variable.
 
 ---
 
+### allowedOrigins?
+
+> `optional` **allowedOrigins?**: `string`[]
+
+Defined in: [types/plugin-options.ts:121](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L121)
+
+List of trusted origins allowed to make cross-origin requests to auth endpoints.
+
+#### Default Value
+
+The origin extracted from [\`siteUrl\`](#siteurl)
+
+#### Remarks
+
+Used to validate the `Origin` header on the `/refresh` endpoint. If the request
+includes an `Origin` header that is not in this list, the route returns a 403.
+When omitted, defaults to the origin portion of `siteUrl`.
+
+Add entries here if your frontend runs on a different origin than `siteUrl`.
+
+#### Example
+
+```ts
+['https://app.example.com', 'https://staging.example.com'];
+```
+
+---
+
 ### analyseError
 
-> **analyseError**: (`error`) => `Promise`\<`string` \| `null`\>
+> **analyseError**: (`error`) => `Promise`\<\{ `message`: `string`; `statusCode`: `number`; \} \| `null`\>
 
-Defined in: [types/plugin-options.ts:202](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L202)
+Defined in: [types/plugin-options.ts:230](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L230)
 
-Callback that translates a raw error into a user-facing message.
+Callback that translates a raw error into a user-facing response.
 
 #### Parameters
 
@@ -50,15 +78,26 @@ The caught exception (typically from the consumer's own DB call)
 
 #### Returns
 
-`Promise`\<`string` \| `null`\>
+`Promise`\<\{ `message`: `string`; `statusCode`: `number`; \} \| `null`\>
 
-A user-facing message string, or `null` to fall back to the default error
+An object with the HTTP status code and a user-facing message,
+or `null` to fall back to a generic 500 error
 
 #### Remarks
 
 The signup route catches errors from **`createUser`** and passes them here.
-Return `null` if the error is not recognised — the route will fall back
-to a generic "Unknown error during signup" message.
+The returned `statusCode` replaces the default 500, and `message` is sent
+as the response body. Return `null` if the error is not recognised — the
+route will fall back to a generic "Unknown error during signup" message.
+
+#### Example
+
+```typescript
+analyseError: async (error) =>
+  error instanceof DuplicateUserError
+    ? { message: 'This user ID is already taken', statusCode: 409 }
+    : null,
+```
 
 ---
 
@@ -66,7 +105,7 @@ to a generic "Unknown error during signup" message.
 
 > **createRefreshToken**: (`userId`, `token`, `expiresAt`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:128](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L128)
+Defined in: [types/plugin-options.ts:146](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L146)
 
 Callback that stores a new refresh token in your persistence layer.
 
@@ -105,7 +144,7 @@ The stored token must be retrievable later for revocation checks via
 
 > **createUser**: (`userId`, `email`, `birthday`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:189](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L189)
+Defined in: [types/plugin-options.ts:207](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L207)
 
 Callback that creates a new user record.
 
@@ -144,7 +183,7 @@ fields and for any additional validation (e.g. email uniqueness).
 
 > **findUser**: (`userId`) => `Promise`\<\{ `email`: `string`; `hashedPassword`: `string`; `id`: `string`; \} \| `null`\>
 
-Defined in: [types/plugin-options.ts:140](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L140)
+Defined in: [types/plugin-options.ts:158](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L158)
 
 Callback that looks up a user by ID.
 
@@ -173,7 +212,7 @@ can verify credentials.
 
 > **getTokenRevokedAt**: (`refreshToken`) => `Promise`\<`Date` \| `null`\>
 
-Defined in: [types/plugin-options.ts:216](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L216)
+Defined in: [types/plugin-options.ts:244](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L244)
 
 Callback that checks whether a refresh token has been revoked.
 
@@ -204,7 +243,7 @@ cryptographically valid.
 
 > **logoutAllDevices**: (`userId`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:176](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L176)
+Defined in: [types/plugin-options.ts:194](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L194)
 
 Callback that revokes all active refresh tokens for a user.
 
@@ -230,7 +269,7 @@ Called during password reset to force re-authentication on all devices.
 
 > `optional` **minimumAge?**: `number`
 
-Defined in: [types/plugin-options.ts:103](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L103)
+Defined in: [types/plugin-options.ts:104](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L104)
 
 Minimum age required for user registration.
 
@@ -246,7 +285,7 @@ before calling `createUser`. When omitted, no age validation is performed.
 
 > `optional` **prefix?**: `string`
 
-Defined in: [types/plugin-options.ts:54](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L54)
+Defined in: [types/plugin-options.ts:55](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L55)
 
 URL prefix for all auth routes.
 
@@ -276,7 +315,7 @@ so route files define only their local paths (e.g. `/login`).
 
 > **refreshSecret**: `string`
 
-Defined in: [types/plugin-options.ts:75](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L75)
+Defined in: [types/plugin-options.ts:76](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L76)
 
 Secret used to sign and verify **refresh** tokens (long-lived, 7-day expiry).
 
@@ -293,7 +332,7 @@ revoked on logout.
 
 > **resetSecret**: `string`
 
-Defined in: [types/plugin-options.ts:85](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L85)
+Defined in: [types/plugin-options.ts:86](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L86)
 
 Secret used to sign and verify **password-reset** tokens (short-lived, 15-minute expiry).
 
@@ -309,7 +348,7 @@ The signed token is embedded in the reset link sent via
 
 > **revokeToken**: (`refreshToken`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:153](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L153)
+Defined in: [types/plugin-options.ts:171](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L171)
 
 Callback that marks a refresh token as revoked.
 
@@ -336,7 +375,7 @@ will be rejected by the plugin's `trusted` check.
 
 > **sendResetEmail**: (`to`, `resetLink`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:115](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L115)
+Defined in: [types/plugin-options.ts:133](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L133)
 
 Callback that delivers a password-reset link to the user's email inbox.
 
@@ -369,7 +408,7 @@ Implementations typically delegate to an SMTP, SendGrid, or SES client.
 
 > **siteUrl**: `string`
 
-Defined in: [types/plugin-options.ts:93](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L93)
+Defined in: [types/plugin-options.ts:94](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L94)
 
 Base URL of the application, used to construct the password-reset link.
 
@@ -385,7 +424,7 @@ Base URL of the application, used to construct the password-reset link.
 
 > **updateUserPassword**: (`userId`, `hashedPassword`) => `Promise`\<`void`\>
 
-Defined in: [types/plugin-options.ts:166](https://github.com/SirEriTheRed/eri-auth-system/blob/07adfe832e04de04d0077832b5a83246f32eeced/src/types/plugin-options.ts#L166)
+Defined in: [types/plugin-options.ts:184](https://github.com/SirEriTheRed/eri-auth-system/blob/e5072561fd66ba7d2b4caa2fb9142bda75ffa635/src/types/plugin-options.ts#L184)
 
 Callback that updates a user's password hash.
 

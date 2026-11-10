@@ -36,7 +36,7 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     expect(response.headers['set-cookie']).not.toContain('Domain=');
   });
 
-  it('returns 404 when the user is not found', async () => {
+  it('returns 401 when the user is not found', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockResolvedValue(null);
 
@@ -46,11 +46,15 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
       payload: { id: 'unknown', password: 'any' },
     });
 
-    expect(response.statusCode).toBe(404);
-    expect(response.body).toBe('Could not find an user with this id');
+    expect(response.statusCode).toBe(401);
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Invalid credentials',
+    });
   });
 
-  it('returns 401 when the password is invalid', async () => {
+  it('returns 401 when the password is wrong', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockResolvedValue({
       id: 'user-1',
@@ -65,10 +69,14 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('This password is invalid');
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 401,
+      error: 'Unauthorized',
+      message: 'Invalid credentials',
+    });
   });
 
-  it('returns 401 with a default message for unknown errors', async () => {
+  it('returns 500 for unexpected errors', async () => {
     const { app, mocks } = await buildApp();
     mocks.findUser.mockRejectedValue(new Error('db connection failed'));
 
@@ -78,7 +86,11 @@ describe(`POST ${ROUTE_PREFIX}/login`, () => {
       payload: { id: 'user-1', password: 'any' },
     });
 
-    expect(response.statusCode).toBe(401);
-    expect(response.body).toBe('Unknown error during login');
+    expect(response.statusCode).toBe(500);
+    expect(JSON.parse(response.body)).toEqual({
+      statusCode: 500,
+      error: 'Internal Server Error',
+      message: 'Internal server error',
+    });
   });
 });

@@ -128,7 +128,7 @@ All routes are registered under the configured prefix (default `/auth`).
 | ------ | -------------------- | ------ | ----------------------------------------------- |
 | POST   | `/auth/signup`       | —      | Create a new user account                       |
 | POST   | `/auth/login`        | —      | Authenticate with ID + password                 |
-| GET    | `/auth/refresh`      | Cookie | Rotate the access token using the refresh token |
+| POST   | `/auth/refresh`      | Cookie | Rotate the access token using the refresh token |
 | PATCH  | `/auth/logout`       | Cookie | Revoke the current refresh token                |
 | POST   | `/auth/askPwdReset`  | —      | Request a password-reset email                  |
 | PATCH  | `/auth/pwdReset`     | Token  | Complete a password reset                       |
@@ -169,6 +169,7 @@ Successful responses return JSON or plain text. All errors follow this shape (cu
 - **Refresh token revocation** — expired or revoked tokens are rejected; custom revocation checking via `getTokenRevokedAt`
 - **Logout-all-devices** — revoke every active refresh token on password reset
 - **Custom error handling** — map database or system errors to user-facing messages via `analyseError`
+- **CSRF-protected refresh** — `/refresh` is POST-only with server-side `Origin` validation; refresh cookie uses `SameSite=Lax`
 - **Full TypeScript types** — Fastify decorator augmentations included, zero extra configuration
 - **80 %+ test coverage** — integration tests covering all 7 routes and error branches
 
@@ -211,6 +212,7 @@ await app.register(authPlugin, {
     db.refreshTokens.insert({ userId, token, expiresAt }),
   updateUserPassword: async (userId, hash) => db.users.updatePassword(userId, hash),
   logoutAllDevices: async (userId) => db.tokens.revokeAll(userId),
+  allowedOrigins: ['https://myapp.com'],
   analyseError: async (err) => (err.code === 'P2002' ? 'This user ID is already taken' : null),
   getTokenRevokedAt: async (token) => db.tokens.revokedAt(token),
 });
@@ -220,6 +222,7 @@ await app.listen({ port: 3000 });
 
 > ⚠️ **Security notice:** `/login` and `/askPwdReset` are brute-force targets.
 > It is strongly recommended to add [@fastify/rate-limit](https://github.com/fastify/fastify-rate-limit) to your app.
+> The `/refresh` endpoint is CSRF-protected via POST-only + server-side `Origin` validation.
 
 [↑ Back to top](#table-of-contents)
 
@@ -279,17 +282,18 @@ All fields are **required**. The plugin validates their presence at registration
 
 **Callbacks:**
 
-| Callback             | Signature                                                            | Called when…                                                          |
-| -------------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `findUser`           | `(userId: string) => Promise<{ id, hashedPassword, email } \| null>` | Login, password reset — looks up a user by ID                         |
-| `createUser`         | `(userId: string, email: string, birthday: string) => Promise<void>` | Signup — creates a new user record                                    |
-| `revokeToken`        | `(token: string \| undefined) => Promise<void>`                      | Logout — marks a refresh token as revoked                             |
-| `sendResetEmail`     | `(to: string, resetLink: string) => Promise<void>`                   | Password reset request — delivers the reset link                      |
-| `createRefreshToken` | `(userId: string, token: string, expiresAt: Date) => Promise<void>`  | Login — persists a refresh token for later revocation                 |
-| `updateUserPassword` | `(userId: string, hashedPassword: string) => Promise<void>`          | Password reset — updates the stored password hash                     |
-| `logoutAllDevices`   | `(userId: string) => Promise<void>`                                  | Password reset — revokes all active refresh tokens                    |
-| `analyseError`       | `(error: unknown) => Promise<string \| null>`                        | Error handling — maps a caught error to a user-facing message         |
-| `getTokenRevokedAt`  | `(token: string) => Promise<Date \| null>`                           | Every request with a refresh cookie — checks if the token was revoked |
+| Callback             | Signature                                                            | Called when…                                                                                                |
+| -------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `findUser`           | `(userId: string) => Promise<{ id, hashedPassword, email } \| null>` | Login, password reset — looks up a user by ID                                                               |
+| `createUser`         | `(userId: string, email: string, birthday: string) => Promise<void>` | Signup — creates a new user record                                                                          |
+| `revokeToken`        | `(token: string \| undefined) => Promise<void>`                      | Logout — marks a refresh token as revoked                                                                   |
+| `sendResetEmail`     | `(to: string, resetLink: string) => Promise<void>`                   | Password reset request — delivers the reset link                                                            |
+| `createRefreshToken` | `(userId: string, token: string, expiresAt: Date) => Promise<void>`  | Login — persists a refresh token for later revocation                                                       |
+| `updateUserPassword` | `(userId: string, hashedPassword: string) => Promise<void>`          | Password reset — updates the stored password hash                                                           |
+| `logoutAllDevices`   | `(userId: string) => Promise<void>`                                  | Password reset — revokes all active refresh tokens                                                          |
+| `analyseError`       | `(error: unknown) => Promise<string \| null>`                        | Error handling — maps a caught error to a user-facing message                                               |
+| `allowedOrigins`     | `string[]` (optional)                                                | Trusted origins for cross-origin request validation on `/refresh`<br/>Defaults to the origin from `siteUrl` |
+| `getTokenRevokedAt`  | `(token: string) => Promise<Date \| null>`                           | Every request with a refresh cookie — checks if the token was revoked                                       |
 
 ### TypeScript
 

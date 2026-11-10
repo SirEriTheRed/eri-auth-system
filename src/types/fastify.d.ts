@@ -74,7 +74,7 @@ declare module 'fastify' {
      *
      * @remarks
      * Used as an `onRequest` or `preHandler` hook on protected routes.
-     * Returns a 401 response with `{ error: 'Access token invalid, please refresh the token' }`
+     * Returns a 401 response with `{ statusCode: 401, error: 'Unauthorized', message: 'Access token invalid, please refresh the token' }`
      * when verification fails.
      */
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
@@ -102,6 +102,19 @@ declare module 'fastify' {
 
     /** @internal Injected from {@link PluginOptions.analyseError | `PluginOptions.analyseError`}. */
     analyseError: PluginOptions['analyseError'];
+
+    /** @internal Injected from {@link PluginOptions.getTokenRevokedAt | `PluginOptions.getTokenRevokedAt`}. */
+    getTokenRevokedAt: PluginOptions['getTokenRevokedAt'];
+
+    /**
+     * List of trusted origins for cross-origin request validation.
+     *
+     * @remarks
+     * Used by the `/refresh` endpoint to validate the `Origin` header.
+     * Injected from {@link PluginOptions.allowedOrigins | `PluginOptions.allowedOrigins`},
+     * or derived from {@link PluginOptions.siteUrl | `siteUrl`} when not configured.
+     */
+    allowedOrigins: string[];
   }
 
   interface FastifyRequest {

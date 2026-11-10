@@ -26,8 +26,9 @@
  *   updateUserPassword: async (userId, hashedPassword) =>
  *     db.users.updatePassword(userId, hashedPassword),
  *   logoutAllDevices: async (userId) => db.tokens.revokeAllForUser(userId),
+ *   allowedOrigins: ['https://example.com', 'https://staging.example.com'],
  *   analyseError: async (error) => error instanceof DuplicateUserError
- *     ? 'A user with this ID already exists'
+ *     ? { message: 'A user with this ID already exists', statusCode: 409 }
  *     : null,
  *   getTokenRevokedAt: async (token) => db.tokens.findRevokedAt(token),
  * });
@@ -101,6 +102,23 @@ export interface PluginOptions {
    * before calling `createUser`. When omitted, no age validation is performed.
    */
   minimumAge?: number;
+
+  /**
+   * List of trusted origins allowed to make cross-origin requests to auth endpoints.
+   *
+   * @defaultValue The origin extracted from {@link PluginOptions.siteUrl | `siteUrl`}
+   *
+   * @remarks
+   * Used to validate the `Origin` header on the `/refresh` endpoint. If the request
+   * includes an `Origin` header that is not in this list, the route returns a 403.
+   * When omitted, defaults to the origin portion of `siteUrl`.
+   *
+   * Add entries here if your frontend runs on a different origin than `siteUrl`.
+   *
+   * @example
+   * ['https://app.example.com', 'https://staging.example.com']
+   */
+  allowedOrigins?: string[];
 
   /**
    * Callback that delivers a password-reset link to the user's email inbox.
@@ -189,17 +207,27 @@ export interface PluginOptions {
   createUser: (userId: string, email: string, birthday: string) => Promise<void>;
 
   /**
-   * Callback that translates a raw error into a user-facing message.
+   * Callback that translates a raw error into a user-facing response.
    *
    * @param error - The caught exception (typically from the consumer's own DB call)
-   * @returns A user-facing message string, or `null` to fall back to the default error
+   * @returns An object with the HTTP status code and a user-facing message,
+   * or `null` to fall back to a generic 500 error
    *
    * @remarks
    * The signup route catches errors from **`createUser`** and passes them here.
-   * Return `null` if the error is not recognised — the route will fall back
-   * to a generic "Unknown error during signup" message.
+   * The returned `statusCode` replaces the default 500, and `message` is sent
+   * as the response body. Return `null` if the error is not recognised — the
+   * route will fall back to a generic "Unknown error during signup" message.
+   *
+   * @example
+   * ```typescript
+   * analyseError: async (error) =>
+   *   error instanceof DuplicateUserError
+   *     ? { message: 'This user ID is already taken', statusCode: 409 }
+   *     : null,
+   * ```
    */
-  analyseError: (error: unknown) => Promise<string | null>;
+  analyseError: (error: unknown) => Promise<{ message: string; statusCode: number } | null>;
 
   /**
    * Callback that checks whether a refresh token has been revoked.
